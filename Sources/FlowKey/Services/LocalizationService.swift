@@ -119,7 +119,12 @@ class LocalizationService: ObservableObject {
             currentLanguageCode = savedLanguageCode
         } else {
             // Default to system language or English
-            let systemLanguage = Locale.current.languageCode ?? "en"
+            let systemLanguage: String
+            if #available(macOS 13, *) {
+                systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
+            } else {
+                systemLanguage = Locale.current.languageCode ?? "en"
+            }
             currentLanguage = SupportedLanguage(rawValue: systemLanguage) ?? .english
             currentLanguageCode = currentLanguage.rawValue
         }
