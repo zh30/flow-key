@@ -1,200 +1,239 @@
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [简体中文](README.zh-CN.md) | [Español](README.es.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md)
 
 # FlowKey — Intelligent Input Method for macOS
 
-A macOS input method application that integrates local AI services, offering selection translation, smart rewriting, and voice dictation.
+A cutting-edge macOS input method application that integrates local AI services, offering real-time translation, voice recognition, and intelligent text processing in 5 major languages.
 
-## Features
+## 🌍 Multilingual Support
 
-### Core
-- ✅ Selection translation: translate any selected text instantly
-- ✅ Quick translate: triple-press Space to translate current input
-- ✅ Local-first: on-device translation models for privacy
-- ✅ Multilingual: Chinese, English, Japanese, Korean, French, German, Russian
+FlowKey supports 5 of the world's most widely used languages:
+
+- 🇺🇸 **English** (Default)
+- 🇨🇳 **中文** (Chinese)
+- 🇪🇸 **Español** (Spanish)
+- 🇮🇳 **हिन्दी** (Hindi)
+- 🇸🇦 **العربية** (Arabic)
+
+## ✨ Key Features
+
+### Core Translation
+- ✅ **Selection Translation**: Instant translation of any selected text
+- ✅ **Quick Translate**: Triple-press Space for immediate translation
+- ✅ **Local-First**: On-device AI models ensure complete privacy
+- ✅ **5 Languages**: Seamless switching between major world languages
 
 ### AI Capabilities
-- 🚧 Offline translation with MLX
-- 🚧 Speech recognition powered by Whisper
-- 🚧 Smart rewrite for text optimization
-- 🚧 Knowledge base with semantic search
+- 🚧 **Offline Translation**: MLX-powered local AI inference
+- 🚧 **Speech Recognition**: Whisper-based voice dictation
+- 🚧 **Smart Rewrite**: AI-powered text optimization
+- 🚧 **Knowledge Base**: Semantic search with personal documents
 
 ### User Experience
-- ✅ Clean UI built with SwiftUI
-- ✅ Deep macOS integration
-- ✅ iCloud sync across devices
-- ✅ Privacy-first, on-device processing
+- ✅ **Native UI**: Clean SwiftUI interface with full localization
+- ✅ **Deep Integration**: Native macOS system integration
+- ✅ **Real-time Switching**: Instant language switching
+- ✅ **Privacy-First**: All processing happens on your device
 
-## Architecture
+## 🏗️ Architecture
 
-### Tech Stack
-- Swift + SwiftUI: native macOS app development
-- MLX Swift: local AI inference optimized for Apple Silicon
-- IMKInputMethod: official macOS input method framework
-- Composable Architecture: state management
-- Core Data: local persistence
+### Technology Stack
+- **Swift + SwiftUI**: Native macOS development
+- **MLX Swift**: Local AI inference optimized for Apple Silicon
+- **IMKInputMethod**: Official macOS input method framework
+- **Core Data**: Robust local data persistence
+- **iCloud Sync**: Seamless cross-device synchronization
 
 ### Project Structure
 ```
 FlowKey/
-├── FlowKey/                    # Main app
-│   ├── InputMethod/           # IME core
-│   ├── Models/                # Data models
-│   ├── Services/              # Services layer
-│   ├── Views/                 # UI
-│   └── App/                   # App entry
-├── FlowKeyTests/              # Tests
-├── FlowKeyInputMethod/        # Input Method extension
-└── Documentation/             # Docs
+├── Sources/FlowKey/
+│   ├── App/                    # Application entry point
+│   ├── InputMethod/           # IME core functionality
+│   ├── Models/                # Data models and services
+│   ├── Services/              # Business logic layer
+│   ├── Views/                 # User interface
+│   └── Resources/             # Assets and resources
+├── Sources/FlowKeyTests/      # Test suite
+└── Documentation/             # Project documentation
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Requirements
-- macOS 13.0 or later
-- Xcode 14.0 or later
+- macOS 14.0 or later
+- Xcode 15.0 or later
 - Swift 5.9 or later
+- Apple Silicon Mac recommended for AI features
 
-### Build
+### Quick Start
 
-1. Clone the repo:
+1. **Clone the repository**
 ```bash
 git clone <repository-url>
 cd flow-key
 ```
 
-2. Build the app:
+2. **Build the application**
 ```bash
-./build.sh
+# Development build
+swift build
+
+# Release build
+swift build -c release
 ```
 
-3. Install the app and input method:
+3. **Run the application**
 ```bash
-# Copy the app to Applications
-cp -r build/FlowKey.app /Applications/
+# Development mode
+swift run
 
-# Install the input method
-mkdir -p ~/Library/Input\ Methods/
-cp -r build/FlowKeyInputMethod.bundle ~/Library/Input\ Methods/
+# Or use the build script
+./run_app.sh
 ```
 
-4. Enable the input method:
+### Installation
+
+1. **Copy to Applications**
+```bash
+cp -r .build/debug/FlowKey.app /Applications/
+```
+
+2. **Enable Input Method**
    - Open System Settings > Keyboard > Input Sources
-   - Click "+" to add an input source
-   - Select "FlowKey" and enable it
+   - Click "+" to add new input source
+   - Select "FlowKey" from the list
+   - Enable it in your input sources
 
-## Usage
+## 🎯 Usage Guide
 
 ### Basic Translation
 1. Select text in any application
-2. The translation will appear automatically
-3. Click the copy button to save the result
+2. Translation appears automatically in the overlay
+3. Use the copy button to save results
 
-### Quick Translate
-- Triple-press Space: translate the current selection
-- Cmd+Shift+T: manually trigger translation
+### Quick Actions
+- **Triple-press Space**: Instant translation of current selection
+- **Cmd+Shift+T**: Manual translation trigger
+- **Cmd+Shift+V**: Voice input activation
 
-### Voice Input
-- Enable voice features in Settings
-- Click the microphone button to start recording
-- Speech will be recognized and translated automatically
+### Voice Features
+1. Enable voice recognition in Settings
+2. Click the microphone button or use voice shortcut
+3. Speak naturally - text is transcribed and translated
+4. Results appear instantly with copy options
 
-### Knowledge Base
-- Import your documents into the knowledge base
-- Use semantic search to find information
-- Supports multiple document formats
+### Language Switching
+1. Open FlowKey Settings
+2. Navigate to "App Language" section
+3. Select your preferred language from the dropdown
+4. Interface updates immediately with full localization
 
-## Development Guide
+## 🔧 Development
 
-### Modules Overview
+### Development Setup
+```bash
+# Install dependencies
+swift package update
 
-#### InputMethod/
-- `FlowInputController.swift`: Handles user input
-- `FlowInputMethod.swift`: Main class and system registration
-- `FlowCandidateView.swift`: Candidate view
+# Generate Xcode project
+swift package generate-xcodeproj
 
-#### Models/
-- `Translation/`: Translation-related models and services
-- `KnowledgeBase/`: Knowledge base management
-- `Speech/`: Speech recognition and processing
+# Run tests
+swift test
 
-#### Services/
+# Build for release
+swift build -c release
+```
+
+### Key Components
+
+#### Input Method Core
+- `FlowInputController.swift`: Handles user input and text processing
+- `FlowInputMethod.swift`: Main input method class and system registration
+- `FlowCandidateView.swift`: Candidate selection interface
+
+#### AI Services
+- `MLXService.swift`: Local AI model integration
 - `AIService.swift`: Unified AI service interface
-- `MLXService.swift`: MLX integration
-- `StorageService.swift`: Data storage service
-- `SyncService.swift`: iCloud sync service
+- `SpeechRecognizer.swift`: Voice recognition capabilities
 
-#### Views/
-- `Settings/`: Settings UI
-- `Overlay/`: Overlay UI
+#### Localization
+- `LocalizationService.swift`: Multilingual support system
+- Supports 5 major languages with real-time switching
+- Complete UI localization with user preference persistence
 
-### Development Workflow
+### Building for Distribution
+```bash
+# Build release version
+swift build -c release
 
-1. Environment setup
-   ```bash
-   # Install dependencies
-   swift package update
-   
-   # Generate Xcode project
-   swift package generate-xcodeproj
-   ```
+# Create app bundle
+mkdir -p FlowKey.app/Contents/MacOS
+cp .build/release/FlowKey FlowKey.app/Contents/MacOS/
 
-2. Development
-   ```bash
-   # Run the app
-   swift run
-   
-   # Run tests
-   swift test
-   ```
+# Sign the app (required for distribution)
+codesign --deep --force --verify --verbose --sign "-" FlowKey.app
+```
 
-3. Build
-   ```bash
-   # Build release
-   swift build -c release
-   ```
+## 🤝 Contributing
 
-## Contributing
+We welcome contributions! Please follow these steps:
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a Pull Request
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
+4. **Push to the branch** (`git push origin feature/amazing-feature`)
+5. **Open a Pull Request**
 
-## FAQ
+### Development Guidelines
+- Follow Swift coding conventions
+- Add tests for new features
+- Update documentation
+- Ensure all tests pass before submitting
 
-### Q: The input method cannot be enabled?
-A: Ensure it has been copied to `~/Library/Input Methods/` and enabled in System Settings.
+## ❓ FAQ
 
-### Q: Translation does not work?
-A: Check your network connection or make sure the local translation model is downloaded.
+### Q: How do I enable the input method?
+A: Copy the app to Applications folder, then go to System Settings > Keyboard > Input Sources, click "+" and select "FlowKey".
 
-### Q: Speech recognition fails?
-A: Ensure microphone permission is granted and the speech model is downloaded.
+### Q: Translation isn't working?
+A: Check your internet connection for online translation, or ensure local AI models are downloaded for offline mode.
 
-## Changelog
+### Q: Voice recognition isn't working?
+A: Grant microphone permissions in System Settings > Privacy & Security > Microphone, and ensure speech models are downloaded.
+
+### Q: How do I change the interface language?
+A: Open FlowKey Settings, go to "App Language", and select your preferred language from the dropdown menu.
+
+## 📋 Changelog
 
 ### v1.0.0 (2025-08-23)
-- ✅ Base input method framework
-- ✅ Selection translation
-- ✅ Online translation API integration
-- ✅ Basic UI
-- ✅ Settings page
+- ✅ Complete multilingual support (5 languages)
+- ✅ Real-time language switching
+- ✅ Local AI model integration framework
+- ✅ Selection translation with overlay UI
+- ✅ Voice recognition foundation
+- ✅ Privacy-first architecture
+- ✅ iCloud sync capabilities
 
 ### Roadmap
-- 🚧 Local AI model integration
-- 🚧 Speech recognition
-- 🚧 Knowledge base system
-- 🚧 iCloud sync
+- 🚧 Advanced offline AI models
+- 🚧 Enhanced voice recognition
+- 🚧 Knowledge base with semantic search
+- 🚧 Smart text rewriting
 - 🚧 More language support
 
-## License
-This project is under the MIT License. See [LICENSE](LICENSE).
+## 📄 License
 
-## Contact
-- Issue tracking: [GitHub Issues](https://github.com/zh30/flow-key/issues)
-- Feature requests: [GitHub Discussions](https://github.com/zh30/flow-key/discussions)
-- Email: support@flowkey.app
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## 📞 Contact
+
+- **Issues**: [GitHub Issues](https://github.com/zh30/flow-key/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/zh30/flow-key/discussions)
+- **Email**: support@flowkey.app
+- **Website**: [flowkey.app](https://flowkey.app)
 
 ---
 
-FlowKey — Type smarter. Communicate better.
+**FlowKey** — Type smarter. Communicate better. 🚀
