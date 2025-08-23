@@ -182,15 +182,24 @@ struct GeneralSettingsView: View {
 struct TranslationSettingsView: View {
     @State private var sourceLanguage = "auto"
     @State private var targetLanguage = "zh"
-    @State private var useLocalTranslation = false
+    @State private var translationMode: TranslationService.TranslationMode = .hybrid
     @State private var autoDetectLanguage = true
     @State private var showTranslationPopup = true
     @State private var popupDuration = 5.0
+    @State private var mlxModelSize = "small"
+    @State private var isModelLoaded = false
+    @State private var isProcessing = false
     
     var body: some View {
         Form {
-            Section(header: Text("翻译设置")) {
-                Toggle("使用本地翻译", isOn: $useLocalTranslation)
+            Section(header: Text("翻译模式")) {
+                Picker("翻译模式", selection: $translationMode) {
+                    Text("在线翻译").tag(TranslationService.TranslationMode.online)
+                    Text("本地翻译").tag(TranslationService.TranslationMode.local)
+                    Text("混合模式").tag(TranslationService.TranslationMode.hybrid)
+                }
+                .pickerStyle(.menu)
+                
                 Toggle("自动检测语言", isOn: $autoDetectLanguage)
                 Toggle("显示翻译弹窗", isOn: $showTranslationPopup)
             }
@@ -220,6 +229,39 @@ struct TranslationSettingsView: View {
                 .pickerStyle(.menu)
             }
             
+            Section(header: Text("MLX 本地翻译")) {
+                Picker("模型大小", selection: $mlxModelSize) {
+                    Text("小型 (50M)").tag("small")
+                    Text("中型 (150M)").tag("medium")
+                    Text("大型 (300M)").tag("large")
+                }
+                .pickerStyle(.menu)
+                
+                HStack {
+                    Text("模型状态")
+                    Spacer()
+                    Text(isModelLoaded ? "已加载" : "未加载")
+                        .foregroundColor(isModelLoaded ? .green : .orange)
+                }
+                
+                Button("加载模型") {
+                    loadMLXModel()
+                }
+                .buttonStyle(.bordered)
+                .disabled(isProcessing)
+                
+                Button("卸载模型") {
+                    unloadMLXModel()
+                }
+                .buttonStyle(.bordered)
+                .disabled(!isModelLoaded || isProcessing)
+                
+                if isProcessing {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                }
+            }
+            
             Section(header: Text("弹窗设置")) {
                 VStack(alignment: .leading) {
                     Text("显示时长: \(Int(popupDuration)) 秒")
@@ -229,6 +271,49 @@ struct TranslationSettingsView: View {
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear {
+            checkModelStatus()
+        }
+    }
+    
+    private func loadMLXModel() {
+        isProcessing = true
+        
+        Task {
+            do {
+                let modelSize = convertToMLXModelSize(mlxModelSize)
+                try await TranslationService.shared.loadMLXModel()
+                
+                await MainActor.run {
+                    isModelLoaded = true
+                    isProcessing = false
+                }
+            } catch {
+                await MainActor.run {
+                    isProcessing = false
+                }
+                print("Failed to load MLX model: \(error)")
+            }
+        }
+    }
+    
+    private func unloadMLXModel() {
+        TranslationService.shared.unloadMLXModel()
+        isModelLoaded = false
+    }
+    
+    private func checkModelStatus() {
+        let modelInfo = TranslationService.shared.getMLXModelInfo()
+        isModelLoaded = modelInfo.isLoaded
+    }
+    
+    private func convertToMLXModelSize(_ size: String) -> MLXService.TranslationModel {
+        switch size {
+        case "small": return .small
+        case "medium": return .medium
+        case "large": return .large
+        default: return .small
+        }
     }
 }
 
@@ -237,12 +322,21 @@ struct KnowledgeSettingsView: View {
     @State private var autoIndexDocuments = true
     @State private var searchLimit = 10
     @State private var vectorModel = "text-embedding-ada-002"
+    @State private var documentCount = 0
+    @State private var isProcessing = false
     
     var body: some View {
         Form {
             Section(header: Text("知识库")) {
                 Toggle("启用知识库", isOn: $knowledgeBaseEnabled)
                 Toggle("自动索引文档", isOn: $autoIndexDocuments)
+                
+                HStack {
+                    Text("文档数量")
+                    Spacer()
+                    Text("\(documentCount)")
+                        .foregroundColor(.secondary)
+                }
             }
             
             Section(header: Text("搜索设置")) {
@@ -258,9 +352,46 @@ struct KnowledgeSettingsView: View {
                 }
                 .pickerStyle(.menu)
             }
+            
+            Section(header: Text("文档管理")) {
+                Button("添加文档") {
+                    // Open file picker
+                }
+                .buttonStyle(.bordered)
+                
+                Button("测试搜索") {
+                    isProcessing = true
+                    Task {
+                        // Test search functionality
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        await MainActor.run {
+                            isProcessing = false
+                        }
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(isProcessing)
+                
+                if isProcessing {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                }
+            }
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear {
+            loadDocumentCount()
+        }
+    }
+    
+    private func loadDocumentCount() {
+        Task {
+            let count = KnowledgeManager.shared.getDocumentCount()
+            await MainActor.run {
+                documentCount = count
+            }
+        }
     }
 }
 

@@ -9,14 +9,43 @@ public class TranslationService {
     
     private let googleTranslateAPI = "https://translation.googleapis.com/language/translate/v2"
     private let apiKey = "YOUR_API_KEY" // Replace with actual API key
+    private let mlxService = MLXService.shared
     
-    public func translate(text: String, source: String = "auto", target: String = "zh") async -> String {
-        // For now, return a mock translation
-        // In production, this would call a real translation API
-        return await performTranslation(text: text, source: source, target: target)
+    // Translation mode
+    public enum TranslationMode {
+        case online
+        case local
+        case hybrid // Try local first, fallback to online
     }
     
-    private func performTranslation(text: String, source: String, target: String) async -> String {
+    private var currentMode: TranslationMode = .hybrid
+    
+    public func setTranslationMode(_ mode: TranslationMode) {
+        self.currentMode = mode
+    }
+    
+    public func getTranslationMode() -> TranslationMode {
+        return currentMode
+    }
+    
+    public func translate(text: String, source: String = "auto", target: String = "zh") async -> String {
+        switch currentMode {
+        case .online:
+            return await performOnlineTranslation(text: text, source: source, target: target)
+        case .local:
+            return await performLocalTranslation(text: text, source: source, target: target)
+        case .hybrid:
+            // Try local first, fallback to online
+            let localResult = await performLocalTranslation(text: text, source: source, target: target)
+            if localResult.contains("[MLX翻译]") {
+                // Local translation failed or is mock, try online
+                return await performOnlineTranslation(text: text, source: source, target: target)
+            }
+            return localResult
+        }
+    }
+    
+    private func performOnlineTranslation(text: String, source: String, target: String) async -> String {
         // Mock translation for development
         if text.isEmpty {
             return ""
@@ -44,27 +73,90 @@ public class TranslationService {
         return await mockTranslate(text: text)
     }
     
+    private func performLocalTranslation(text: String, source: String, target: String) async -> String {
+        do {
+            // Try to use MLX local translation
+            let translatedText = try await mlxService.translate(text: text, from: source, to: target)
+            return translatedText
+        } catch {
+            // Fallback to simple mock translation
+            print("Local translation failed: \(error)")
+            return await mockLocalTranslate(text: text, target: target)
+        }
+    }
+    
     private func mockTranslate(text: String) async -> String {
         // This is a very basic mock translation
         // In a real implementation, you would call a translation API
         return "[翻译: \(text)]"
     }
     
+    private func mockLocalTranslate(text: String, target: String) async -> String {
+        // This is a placeholder for MLX-based translation
+        return "[本地翻译: \(text) -> \(target)]"
+    }
+    
+    // MARK: - MLX Model Management
+    
+    public func loadMLXModel() async throws {
+        try await mlxService.loadTranslationModel(.small)
+    }
+    
+    public func unloadMLXModel() {
+        mlxService.unloadModel()
+    }
+    
+    public func getMLXModelInfo() -> MLXModelInfo {
+        return mlxService.getModelInfo()
+    }
+    
+    public func optimizeMLXModel() async {
+        await mlxService.optimizeForDevice()
+    }
+    
+    public func getMLXPerformanceMetrics() -> MLXPerformanceMetrics {
+        return mlxService.getPerformanceMetrics()
+    }
+    
+    // MARK: - Language Detection Enhancement
+    
+    public func detectLanguage(text: String) async -> String {
+        // Enhanced language detection
+        if text.isEmpty {
+            return "auto"
+        }
+        
+        // Check for Chinese characters
+        if text.contains(where: { "\u{4E00}"..."\u{9FFF}" ~= $0 }) {
+            return "zh"
+        }
+        
+        // Check for Japanese characters
+        if text.contains(where: { "\u{3040}"..."\u{309F}" ~= $0 || "\u{30A0}"..."\u{30FF}" ~= $0 }) {
+            return "ja"
+        }
+        
+        // Check for Korean characters
+        if text.contains(where: { "\u{AC00}"..."\u{D7AF}" ~= $0 }) {
+            return "ko"
+        }
+        
+        // Check for common English words
+        let englishWords = ["the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "do", "does", "did", "will", "would", "could", "should", "may", "might", "must", "can", "this", "that", "these", "those"]
+        let words = text.lowercased().components(separatedBy: .whitespacesAndNewlines)
+        let englishWordCount = words.filter { englishWords.contains($0) }.count
+        
+        if englishWordCount > 0 && englishWordCount > words.count * 0.1 {
+            return "en"
+        }
+        
+        return "auto"
+    }
+    
     public func getSupportedLanguages() async -> [String] {
         return [
             "auto", "zh", "en", "ja", "ko", "fr", "de", "es", "ru", "pt", "it"
         ]
-    }
-    
-    public func detectLanguage(text: String) async -> String {
-        // Mock language detection
-        if text.contains("你好") || text.contains("谢谢") {
-            return "zh"
-        } else if text.contains("Hello") || text.contains("World") {
-            return "en"
-        } else {
-            return "auto"
-        }
     }
 }
 
@@ -124,10 +216,10 @@ struct Translation: Decodable {
 
 // MARK: - Local Translation Service
 public class LocalTranslator {
-    private let model: TranslationModel
+    private let model: LocalTranslationModel
     
     public init() {
-        self.model = TranslationModel()
+        self.model = LocalTranslationModel()
     }
     
     public func translate(text: String, to target: String) async -> String {
@@ -144,7 +236,7 @@ public class LocalTranslator {
 }
 
 // MARK: - Translation Model
-class TranslationModel {
+class LocalTranslationModel {
     private var loadedModels: [String: Any] = [:]
     
     func translate(text: String, target: String) async -> String {
