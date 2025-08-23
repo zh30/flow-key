@@ -10,12 +10,15 @@ public class TranslationService {
     private let googleTranslateAPI = "https://translation.googleapis.com/language/translate/v2"
     private let apiKey = "YOUR_API_KEY" // Replace with actual API key
     private let mlxService = MLXService.shared
+    private let historyManager = TranslationHistoryManager.shared
+    private let qualityOptimizer = TranslationQualityOptimizer.shared
+    private let habitService = UserHabitIntegrationService.shared
     
     // Translation mode
-    public enum TranslationMode {
-        case online
-        case local
-        case hybrid // Try local first, fallback to online
+    public enum TranslationMode: String {
+        case online = "online"
+        case local = "local"
+        case hybrid = "hybrid" // Try local first, fallback to online
     }
     
     private var currentMode: TranslationMode = .hybrid
@@ -28,21 +31,63 @@ public class TranslationService {
         return currentMode
     }
     
-    public func translate(text: String, source: String = "auto", target: String = "zh") async -> String {
+    public func translate(text: String, source: String = "auto", target: String = "zh", enableOptimization: Bool = true) async -> String {
+        // Check user preferences for auto-translation
+        var finalSource = source
+        var finalTarget = target
+        
+        if let preferredLanguages = habitService.getPreferredTranslationLanguages() {
+            if source == "auto" {
+                finalSource = preferredLanguages.source
+            }
+            finalTarget = preferredLanguages.target
+        }
+        
+        let result: String
+        
         switch currentMode {
         case .online:
-            return await performOnlineTranslation(text: text, source: source, target: target)
+            result = await performOnlineTranslation(text: text, source: finalSource, target: finalTarget)
         case .local:
-            return await performLocalTranslation(text: text, source: source, target: target)
+            result = await performLocalTranslation(text: text, source: finalSource, target: finalTarget)
         case .hybrid:
             // Try local first, fallback to online
-            let localResult = await performLocalTranslation(text: text, source: source, target: target)
+            let localResult = await performLocalTranslation(text: text, source: finalSource, target: finalTarget)
             if localResult.contains("[MLX翻译]") {
                 // Local translation failed or is mock, try online
-                return await performOnlineTranslation(text: text, source: source, target: target)
+                result = await performOnlineTranslation(text: text, source: finalSource, target: finalTarget)
+            } else {
+                result = localResult
             }
-            return localResult
         }
+        
+        // Apply quality optimization if enabled
+        let finalResult: String
+        if enableOptimization && shouldOptimizeTranslation(text: text, result: result) {
+            finalResult = await optimizeTranslationQuality(
+                originalText: text,
+                translatedText: result,
+                sourceLanguage: finalSource,
+                targetLanguage: finalTarget
+            )
+        } else {
+            finalResult = result
+        }
+        
+        // Add to history
+        await addToHistory(text: text, translation: finalResult, source: finalSource, target: finalTarget)
+        
+        // Record user habit for learning
+        let confidence = calculateTranslationConfidence(text: text, result: finalResult, mode: currentMode)
+        habitService.recordTranslationInteraction(
+            sourceText: text,
+            targetText: finalResult,
+            sourceLanguage: finalSource,
+            targetLanguage: finalTarget,
+            confidence: confidence
+        )
+        
+        return finalResult
     }
     
     private func performOnlineTranslation(text: String, source: String, target: String) async -> String {
@@ -146,7 +191,7 @@ public class TranslationService {
         let words = text.lowercased().components(separatedBy: .whitespacesAndNewlines)
         let englishWordCount = words.filter { englishWords.contains($0) }.count
         
-        if englishWordCount > 0 && englishWordCount > words.count * 0.1 {
+        if englishWordCount > 0 && englishWordCount > Int(Double(words.count) * 0.1) {
             return "en"
         }
         
@@ -157,6 +202,155 @@ public class TranslationService {
         return [
             "auto", "zh", "en", "ja", "ko", "fr", "de", "es", "ru", "pt", "it"
         ]
+    }
+    
+    // MARK: - History Management
+    
+    public func getTranslationHistory(limit: Int = 50) -> [TranslationHistoryManager.TranslationRecord] {
+        return historyManager.getTranslationHistory(limit: limit)
+    }
+    
+    public func searchTranslationHistory(query: String, limit: Int = 20) -> [TranslationHistoryManager.TranslationRecord] {
+        return historyManager.searchHistory(query: query, limit: limit)
+    }
+    
+    public func clearTranslationHistory() {
+        historyManager.clearAllHistory()
+    }
+    
+    public func getTranslationStatistics() -> HistoryStatistics {
+        return historyManager.getHistoryStatistics()
+    }
+    
+    public func deleteTranslationRecord(withId id: String) {
+        historyManager.deleteTranslationRecord(withId: id)
+    }
+    
+    // MARK: - Quality Optimization Methods
+    
+    public func optimizeTranslationQuality(
+        originalText: String,
+        translatedText: String,
+        sourceLanguage: String,
+        targetLanguage: String,
+        context: String? = nil,
+        strategy: TranslationQualityOptimizer.OptimizationStrategy = .balanced
+    ) async -> String {
+        let optimizationResult = await qualityOptimizer.optimizeTranslation(
+            originalText: originalText,
+            translatedText: translatedText,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
+            context: context,
+            strategy: strategy
+        )
+        
+        return optimizationResult.optimizedTranslation
+    }
+    
+    public func getTranslationQualityAnalysis(
+        originalText: String,
+        translatedText: String,
+        sourceLanguage: String,
+        targetLanguage: String,
+        context: String? = nil
+    ) async -> TranslationQualityOptimizer.QualityMetrics {
+        return await qualityOptimizer.analyzeTranslationQuality(
+            originalText: originalText,
+            translatedText: translatedText,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
+            context: context
+        )
+    }
+    
+    public func getTranslationSuggestions(
+        originalText: String,
+        translatedText: String,
+        sourceLanguage: String,
+        targetLanguage: String,
+        context: String? = nil
+    ) async -> [TranslationQualityOptimizer.TranslationSuggestion] {
+        let qualityMetrics = await qualityOptimizer.analyzeTranslationQuality(
+            originalText: originalText,
+            translatedText: translatedText,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
+            context: context
+        )
+        
+        return await qualityOptimizer.generateImprovementSuggestions(
+            originalText: originalText,
+            translatedText: translatedText,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
+            context: context,
+            qualityMetrics: qualityMetrics
+        )
+    }
+    
+    private func shouldOptimizeTranslation(text: String, result: String) -> Bool {
+        // Don't optimize very short texts or mock translations
+        guard text.count > 3 && !result.contains("[") && !result.contains("]") else {
+            return false
+        }
+        
+        // Check user preferences for optimization
+        let preferences = habitService.getLearnedPreferences()
+        if let optimizationEnabled = preferences.optimizationEnabled {
+            return optimizationEnabled
+        }
+        
+        // Default to true for longer texts
+        return text.count > 10
+    }
+    
+    // MARK: - Private Methods
+    
+    private func calculateTranslationConfidence(text: String, result: String, mode: TranslationMode) -> Double {
+        var confidence = 0.5
+        
+        // Base confidence based on translation mode
+        switch mode {
+        case .online:
+            confidence = 0.8
+        case .local:
+            confidence = 0.7
+        case .hybrid:
+            confidence = 0.75
+        }
+        
+        // Adjust based on text length
+        if text.count > 10 {
+            confidence += 0.1
+        }
+        
+        // Adjust based on result quality
+        if !result.contains("[") && !result.contains("]") {
+            confidence += 0.1
+        }
+        
+        return min(confidence, 1.0)
+    }
+    
+    private func addToHistory(text: String, translation: String, source: String, target: String) async {
+        // Skip empty or very short translations
+        guard text.count > 1 && !translation.isEmpty else { return }
+        
+        // Skip mock translations
+        guard !translation.contains("[") && !translation.contains("]") else { return }
+        
+        await MainActor.run {
+            historyManager.addTranslationRecord(
+                originalText: text,
+                translatedText: translation,
+                sourceLanguage: source,
+                targetLanguage: target,
+                translationMode: currentMode.rawValue,
+                confidence: nil,
+                context: nil
+            )
+        }
     }
 }
 

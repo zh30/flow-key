@@ -163,11 +163,11 @@ public class AIService {
         }
     }
     
-    public func getAllKnowledgeDocuments() -> [KnowledgeDocument] {
+    public func getAllKnowledgeDocuments() -> [KnowledgeDocumentInfo] {
         let documents = knowledgeManager.getAllDocuments()
         
         return documents.map { doc in
-            KnowledgeDocument(
+            KnowledgeDocumentInfo(
                 id: doc.id,
                 title: doc.title,
                 type: convertToDocumentType(doc.type),
@@ -377,7 +377,7 @@ public struct KnowledgeSearchResult {
     public let tags: [String]
 }
 
-public struct KnowledgeDocument {
+public struct KnowledgeDocumentInfo {
     public let id: String
     public let title: String
     public let type: DocumentType

@@ -15,6 +15,32 @@ struct FlowKeyApp: App {
             SettingsView()
         }
     }
+    
+    init() {
+        initializeServices()
+    }
+    
+    private func initializeServices() {
+        // Initialize Core Data
+        CoreDataManager.shared.initialize()
+        
+        // Initialize privacy and encryption
+        try? PrivacyManager.shared.initialize()
+        
+        // Initialize translation history manager
+        TranslationHistoryManager.shared.initialize()
+        
+        // Initialize backup manager
+        BackupManager.shared.initialize()
+        
+        // Initialize user habit manager
+        UserHabitManager.shared.initialize()
+        
+        // Initialize AI services
+        Task {
+            try? await AIService.shared.initialize()
+        }
+    }
 }
 
 struct ContentView: View {
@@ -131,17 +157,53 @@ struct SettingsView: View {
                 }
                 .tag(1)
             
+            TranslationQualitySettingsView()
+                .tabItem {
+                    Label("质量优化", systemImage: "chart.line.uptrend.xyaxis")
+                }
+                .tag(8)
+            
+            ModelUpdateSettingsView()
+                .tabItem {
+                    Label("模型更新", systemImage: "arrow.down.circle.dotted")
+                }
+                .tag(9)
+            
             KnowledgeSettingsView()
                 .tabItem {
                     Label("知识库", systemImage: "book.fill")
                 }
                 .tag(2)
             
+            TranslationHistoryView()
+                .tabItem {
+                    Label("历史", systemImage: "clock.arrow.circlepath")
+                }
+                .tag(3)
+            
+            BackupSettingsView()
+                .tabItem {
+                    Label("备份", systemImage: "externaldrive")
+                }
+                .tag(4)
+            
+            SmartTextDetectionView()
+                .tabItem {
+                    Label("智能检测", systemImage: "text.magnifyingglass")
+                }
+                .tag(5)
+            
+            UserHabitLearningView()
+                .tabItem {
+                    Label("习惯学习", systemImage: "brain.head.profile")
+                }
+                .tag(6)
+            
             SyncSettingsView()
                 .tabItem {
                     Label("同步", systemImage: "cloud")
                 }
-                .tag(3)
+                .tag(7)
         }
         .frame(width: 500, height: 400)
     }

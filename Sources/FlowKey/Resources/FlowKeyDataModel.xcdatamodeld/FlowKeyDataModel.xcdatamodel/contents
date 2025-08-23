@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="KnowledgeDocument" representedClassName="KnowledgeDocument" syncable="YES" codeGenerationType="class">
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="documentType" attributeType="String"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isIndexed" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="metadata" attributeType="Transformable" customClassName="NSDictionary"/>
+        <attribute name="tags" attributeType="Transformable" customClassName="NSArray"/>
+        <attribute name="title" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="TranslationRecord" representedClassName="TranslationRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="confidence" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="contextText" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="originalText" attributeType="String"/>
+        <attribute name="sourceLanguage" attributeType="String"/>
+        <attribute name="targetLanguage" attributeType="String"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="translatedText" attributeType="String"/>
+        <attribute name="translationMode" attributeType="String"/>
+    </entity>
+    <entity name="UserHabits" representedClassName="UserHabit" syncable="YES" codeGenerationType="class">
+        <attribute name="actionType" attributeType="String"/>
+        <attribute name="context" optional="YES" attributeType="String"/>
+        <attribute name="details" attributeType="Transformable" customClassName="NSDictionary"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="UserSettings" representedClassName="UserSettings" syncable="YES" codeGenerationType="class">
+        <attribute name="autoCheckUpdates" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="autoIndexDocuments" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="autoSync" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="icloudSyncEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="interfaceLanguage" attributeType="String" defaultValueString="zh-CN"/>
+        <attribute name="knowledgeBaseEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="launchAtLogin" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="mlxModelSize" attributeType="String" defaultValueString="small"/>
+        <attribute name="popupDuration" attributeType="Double" defaultValueString="5.0" usesScalarValueType="YES"/>
+        <attribute name="searchLimit" attributeType="Integer" defaultValueString="10" usesScalarValueType="YES"/>
+        <attribute name="showInMenuBar" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="showTranslationPopup" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="sourceLanguage" attributeType="String" defaultValueString="auto"/>
+        <attribute name="syncInterval" attributeType="Integer" defaultValueString="3600" usesScalarValueType="YES"/>
+        <attribute name="targetLanguage" attributeType="String" defaultValueString="zh"/>
+        <attribute name="translationMode" attributeType="String" defaultValueString="hybrid"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="TranslationRecord" positionX="-63" positionY="-18" width="128" height="194"/>
+        <element name="UserSettings" positionX="-54" positionY="207" width="128" height="254"/>
+        <element name="KnowledgeDocument" positionX="-36" positionY="486" width="128" height="148"/>
+        <element name="UserHabits" positionX="160" positionY="-18" width="128" height="119"/>
+    </elements>
+</model>

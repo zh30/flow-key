@@ -162,6 +162,34 @@ public class MLXService {
         )
     }
     
+    public func getModelInfo() -> MLXModelInfo {
+        return MLXModelInfo(
+            name: translationModel.modelName,
+            size: translationModel.modelSize,
+            isLoaded: isModelLoaded,
+            supportedLanguages: getSupportedLanguages()
+        )
+    }
+    
+    private func getSupportedLanguages() -> [MLXLanguage] {
+        return [
+            MLXLanguage(code: "en", name: "English", nativeName: "English"),
+            MLXLanguage(code: "zh", name: "Chinese", nativeName: "中文"),
+            MLXLanguage(code: "ja", name: "Japanese", nativeName: "日本語"),
+            MLXLanguage(code: "ko", name: "Korean", nativeName: "한국어"),
+            MLXLanguage(code: "es", name: "Spanish", nativeName: "Español"),
+            MLXLanguage(code: "fr", name: "French", nativeName: "Français"),
+            MLXLanguage(code: "de", name: "German", nativeName: "Deutsch"),
+            MLXLanguage(code: "ru", name: "Russian", nativeName: "Русский"),
+            MLXLanguage(code: "pt", name: "Portuguese", nativeName: "Português"),
+            MLXLanguage(code: "it", name: "Italian", nativeName: "Italiano"),
+            MLXLanguage(code: "ar", name: "Arabic", nativeName: "العربية"),
+            MLXLanguage(code: "hi", name: "Hindi", nativeName: "हिन्दी"),
+            MLXLanguage(code: "th", name: "Thai", nativeName: "ไทย"),
+            MLXLanguage(code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt")
+        ]
+    }
+    
     // MARK: - Error Types
     
     public enum TranslationError: Error, LocalizedError {
@@ -187,11 +215,17 @@ public class MLXService {
 
 // MARK: - Model Information Structs
 
+public struct MLXLanguage {
+    public let code: String
+    public let name: String
+    public let nativeName: String
+}
+
 public struct MLXModelInfo {
     public let name: String
     public let size: Int64
     public let isLoaded: Bool
-    public let supportedLanguages: [Language]
+    public let supportedLanguages: [MLXLanguage]
 }
 
 
