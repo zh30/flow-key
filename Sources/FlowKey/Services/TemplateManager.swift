@@ -11,8 +11,15 @@ public class TemplateManager: ObservableObject {
     
     public func loadTemplates() {
         // Load templates from storage
+        isProcessing = true
+        
         templateQueue.async {
-            self.fetchTemplates()
+            let loadedTemplates = self.loadTemplatesFromCoreData()
+            
+            DispatchQueue.main.async {
+                self.templates = loadedTemplates
+                self.isProcessing = false
+            }
         }
         print("Template manager loaded templates")
     }
@@ -24,7 +31,7 @@ public class TemplateManager: ObservableObject {
     @Published var isProcessing = false
     @Published var searchQuery = ""
     
-    private let context = CoreDataManager.shared.viewContext
+    private let context = CoreDataManager.shared.context
     private let templateQueue = DispatchQueue(label: "com.flowkey.templates", qos: .userInitiated)
     
     // MARK: - Template Types
@@ -328,76 +335,98 @@ public class TemplateManager: ObservableObject {
     
     // MARK: - Public Methods
     
-    public func loadTemplates() {
-        isProcessing = true
-        
-        templateQueue.async {
-            let loadedTemplates = self.loadTemplatesFromCoreData()
-            
-            DispatchQueue.main.async {
-                self.templates = loadedTemplates
-                self.isProcessing = false
-            }
-        }
-    }
-    
     public func addTemplate(_ template: Template) async throws {
-        try await templateQueue.async {
-            let newTemplate = Template(
-                name: template.name,
-                type: template.type,
-                content: template.content,
-                variables: template.variables,
-                category: template.category,
-                tags: template.tags,
-                isFavorite: template.isFavorite
-            )
-            
-            try self.saveTemplateToCoreData(newTemplate)
-            self.loadTemplates()
+        try await withCheckedContinuation { continuation in
+            templateQueue.async {
+                do {
+                    let newTemplate = Template(
+                        id: UUID(),
+                        name: template.name,
+                        type: template.type,
+                        content: template.content,
+                        variables: template.variables,
+                        category: template.category,
+                        tags: template.tags,
+                        isFavorite: template.isFavorite,
+                        usageCount: 0,
+                        lastUsed: nil,
+                        createdAt: Date(),
+                        updatedAt: Date()
+                    )
+                    
+                    try self.saveTemplateToCoreData(newTemplate)
+                    self.loadTemplatesFromCoreData()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
     
     public func updateTemplate(_ template: Template) async throws {
-        try await templateQueue.async {
-            var updatedTemplate = template
-            updatedTemplate.updatedAt = Date()
-            
-            try self.updateTemplateInCoreData(updatedTemplate)
-            self.loadTemplates()
+        try await withCheckedContinuation { continuation in
+            templateQueue.async {
+                do {
+                    var updatedTemplate = template
+                    updatedTemplate.updatedAt = Date()
+                    
+                    try self.updateTemplateInCoreData(updatedTemplate)
+                    self.loadTemplatesFromCoreData()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
     
     public func deleteTemplate(_ id: UUID) async throws {
-        try await templateQueue.async {
-            try self.deleteTemplateFromCoreData(id)
-            self.loadTemplates()
+        try await withCheckedContinuation { continuation in
+            templateQueue.async {
+                do {
+                    try self.deleteTemplateFromCoreData(id)
+                    self.loadTemplatesFromCoreData()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
     
     public func useTemplate(_ id: UUID) async throws -> TemplateInstance {
-        return try await templateQueue.async {
-            guard let template = self.templates.first(where: { $0.id == id }) else {
-                throw TemplateError.templateNotFound
+        return try await withCheckedContinuation { continuation in
+            templateQueue.async {
+                do {
+                    guard let template = self.templates.first(where: { $0.id == id }) else {
+                        throw TemplateError.templateNotFound
+                    }
+                    
+                    // Update usage count
+                    var updatedTemplate = template
+                    updatedTemplate.usageCount += 1
+                    updatedTemplate.lastUsed = Date()
+                    
+                    try self.updateTemplateInCoreData(updatedTemplate)
+                    self.loadTemplatesFromCoreData()
+                    
+                    // Create template instance with default values
+                    let variables = self.getDefaultVariables(for: template)
+                    let renderedContent = try self.renderTemplate(template, variables: variables)
+                    
+                    let instance = TemplateInstance(
+                        templateId: template.id,
+                        variables: variables,
+                        renderedContent: renderedContent,
+                        createdAt: Date()
+                    )
+                    
+                    continuation.resume(returning: instance)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
             }
-            
-            // Update usage count
-            var updatedTemplate = template
-            updatedTemplate.usageCount += 1
-            updatedTemplate.lastUsed = Date()
-            
-            try self.updateTemplateInCoreData(updatedTemplate)
-            self.loadTemplates()
-            
-            // Create template instance with default values
-            let variables = self.getDefaultVariables(for: template)
-            let renderedContent = try self.renderTemplate(template, variables: variables)
-            
-            return TemplateInstance(
-                templateId: template.id,
-                variables: variables,
-                renderedContent: renderedContent
-            )
         }
     }
     
@@ -468,12 +497,20 @@ public class TemplateManager: ObservableObject {
         
         // Add imported templates
         for template in importedTemplates {
-            var newTemplate = template
-            newTemplate.id = UUID() // Generate new ID
-            newTemplate.createdAt = Date()
-            newTemplate.updatedAt = Date()
-            newTemplate.usageCount = 0
-            newTemplate.lastUsed = nil
+            let newTemplate = Template(
+                id: UUID(), // Generate new ID
+                name: template.name,
+                type: template.type,
+                content: template.content,
+                variables: template.variables,
+                category: template.category,
+                tags: template.tags,
+                isFavorite: template.isFavorite,
+                usageCount: 0,
+                lastUsed: nil,
+                createdAt: Date(),
+                updatedAt: Date()
+            )
             
             try await addTemplate(newTemplate)
         }
@@ -717,7 +754,12 @@ public class TemplateManager: ObservableObject {
                             required: dict["required"] as? Bool ?? false,
                             defaultValue: dict["defaultValue"] as? String,
                             options: dict["options"] as? [String],
-                            validation: dict["validation"] as? [String: String].flatMap { ValidationRule(type: ValidationType(rawValue: $0["type"] as? String ?? "") ?? .required, parameters: $0) },
+                            validation: (dict["validation"] as? [String: String]).flatMap { validationDict in
+                            ValidationRule(
+                                type: ValidationType(rawValue: validationDict["type"] as? String ?? "") ?? .required,
+                                parameters: validationDict
+                            )
+                        },
                             description: dict["description"] as? String
                         )
                     },

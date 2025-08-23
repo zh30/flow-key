@@ -5,7 +5,7 @@ import MLX
 
 // MARK: - Voice Command Types
 
-public enum VoiceCommandType: String, CaseIterable {
+public enum VoiceCommandType: String, CaseIterable, Codable {
     case translate = "translate"
     case insert = "insert"
     case search = "search"
@@ -62,6 +62,27 @@ public enum VoiceCommandType: String, CaseIterable {
         case .delete: return "delete.backward"
         case .enter: return "return"
         case .escape: return "escape"
+        }
+    }
+    
+    var example: String {
+        switch self {
+        case .translate: return "翻译 Hello World"
+        case .insert: return "插入 你好世界"
+        case .search: return "搜索 机器学习"
+        case .settings: return "设置"
+        case .help: return "帮助"
+        case .clear: return "清除"
+        case .copy: return "复制"
+        case .paste: return "粘贴"
+        case .undo: return "撤销"
+        case .redo: return "重做"
+        case .newLine: return "换行"
+        case .tab: return "制表符"
+        case .space: return "空格"
+        case .delete: return "删除"
+        case .enter: return "回车"
+        case .escape: return "退出"
         }
     }
 }
@@ -150,11 +171,6 @@ public class VoiceCommandRecognizer: ObservableObject {
     
     // MARK: - Initialization
     
-    public func initialize() async {
-        // Initialize voice command recognizer
-        await loadSettings()
-        print("Voice command recognizer initialized")
-    }
     private let commandParser = VoiceCommandParser()
     private let commandExecutor = VoiceCommandExecutor()
     private var cancellables = Set<AnyCancellable>()

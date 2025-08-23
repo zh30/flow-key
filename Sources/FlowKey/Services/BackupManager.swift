@@ -7,6 +7,9 @@ public class BackupManager {
     
     public func initialize() {
         // Initialize backup functionality
+        // Schedule automatic backup
+        scheduleAutomaticBackup()
+        
         print("Backup manager initialized")
     }
     
@@ -96,7 +99,7 @@ public class BackupManager {
         let result = RestoreResult(
             backupId: backupData.id,
             timestamp: Date(),
-            itemsRestored: backupData.translationRecords.count + backupData.userSettings.count + backupData.knowledgeDocuments.count,
+            itemsRestored: backupData.translationRecords.count + (backupData.userSettings != nil ? 1 : 0) + backupData.knowledgeDocuments.count,
             success: true
         )
         
@@ -208,25 +211,25 @@ public class BackupManager {
                 )
             },
             userSettings: BackupUserSettings(
-                id: userSettings.id.uuidString,
-                launchAtLogin: userSettings.launchAtLogin,
-                showInMenuBar: userSettings.showInMenuBar,
-                autoCheckUpdates: userSettings.autoCheckUpdates,
-                interfaceLanguage: userSettings.interfaceLanguage,
-                translationMode: userSettings.translationMode,
-                sourceLanguage: userSettings.sourceLanguage,
-                targetLanguage: userSettings.targetLanguage,
-                showTranslationPopup: userSettings.showTranslationPopup,
-                popupDuration: userSettings.popupDuration,
-                mlxModelSize: userSettings.mlxModelSize,
-                knowledgeBaseEnabled: userSettings.knowledgeBaseEnabled,
-                autoIndexDocuments: userSettings.autoIndexDocuments,
-                searchLimit: userSettings.searchLimit,
-                icloudSyncEnabled: userSettings.icloudSyncEnabled,
-                autoSync: userSettings.autoSync,
-                syncInterval: userSettings.syncInterval,
-                createdAt: userSettings.createdAt,
-                updatedAt: userSettings.updatedAt
+                id: userSettings?.id.uuidString ?? UUID().uuidString,
+                launchAtLogin: userSettings?.launchAtLogin ?? false,
+                showInMenuBar: userSettings?.showInMenuBar ?? true,
+                autoCheckUpdates: userSettings?.autoCheckUpdates ?? true,
+                interfaceLanguage: userSettings?.interfaceLanguage ?? "zh-CN",
+                translationMode: userSettings?.translationMode ?? "hybrid",
+                sourceLanguage: userSettings?.sourceLanguage ?? "auto",
+                targetLanguage: userSettings?.targetLanguage ?? "zh",
+                showTranslationPopup: userSettings?.showTranslationPopup ?? true,
+                popupDuration: userSettings?.popupDuration ?? 5.0,
+                mlxModelSize: userSettings?.mlxModelSize ?? "small",
+                knowledgeBaseEnabled: userSettings?.knowledgeBaseEnabled ?? false,
+                autoIndexDocuments: userSettings?.autoIndexDocuments ?? true,
+                searchLimit: userSettings?.searchLimit ?? 10,
+                icloudSyncEnabled: userSettings?.icloudSyncEnabled ?? false,
+                autoSync: userSettings?.autoSync ?? true,
+                syncInterval: userSettings?.syncInterval ?? 3600,
+                createdAt: userSettings?.createdAt ?? Date(),
+                updatedAt: userSettings?.updatedAt ?? Date()
             ),
             knowledgeDocuments: knowledgeDocuments.map { document in
                 BackupKnowledgeDocument(
@@ -245,7 +248,7 @@ public class BackupManager {
                 BackupUserHabit(
                     id: habit.id.uuidString,
                     actionType: habit.actionType,
-                    details: habit.details as? [String: Any] ?? [:],
+                    details: habit.details as? [String: String] ?? [:],
                     context: habit.context,
                     timestamp: habit.timestamp
                 )
@@ -376,15 +379,7 @@ public class BackupManager {
         return formatter.string(from: date)
     }
     
-    // MARK: - Initialization
-    
-    public func initialize() {
-        // Schedule automatic backup
-        scheduleAutomaticBackup()
-        
-        print("Backup manager initialized")
     }
-}
 
 // MARK: - Backup Data Structures
 
@@ -464,7 +459,7 @@ public struct BackupKnowledgeDocument: Codable {
 public struct BackupUserHabit: Codable {
     public let id: String
     public let actionType: String
-    public let details: [String: Any]
+    public let details: [String: String]
     public let context: String?
     public let timestamp: Date
 }

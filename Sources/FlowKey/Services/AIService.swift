@@ -1,6 +1,45 @@
 import Foundation
 import MLX
 
+// MARK: - Type Aliases
+
+public enum DocumentType: String, CaseIterable, Codable {
+    case text = "text"
+    case pdf = "pdf"
+    case word = "word"
+    case markdown = "markdown"
+    case html = "html"
+    case custom = "custom"
+}
+
+public struct SpeechSegment: Codable {
+    public let text: String
+    public let startTime: Double
+    public let endTime: Double
+    public let confidence: Double
+    
+    public init(text: String, startTime: Double, endTime: Double, confidence: Double) {
+        self.text = text
+        self.startTime = startTime
+        self.endTime = endTime
+        self.confidence = confidence
+    }
+}
+
+public struct PerformanceMetrics: Codable {
+    public let translationTime: Double
+    public let accuracy: Double
+    public let memoryUsage: Double
+    public let cpuUsage: Double
+    
+    public init(translationTime: Double, accuracy: Double, memoryUsage: Double, cpuUsage: Double) {
+        self.translationTime = translationTime
+        self.accuracy = accuracy
+        self.memoryUsage = memoryUsage
+        self.cpuUsage = cpuUsage
+    }
+}
+
 public class AIService {
     public static let shared = AIService()
     

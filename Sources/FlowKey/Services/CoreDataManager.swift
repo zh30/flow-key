@@ -11,13 +11,7 @@ public class CoreDataManager {
     private lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "FlowKeyDataModel")
         
-        // Load the model from the bundle
-        guard let modelURL = Bundle.main.url(forResource: "FlowKeyDataModel", withExtension: "momd") else {
-            fatalError("Unable to find Core Data model in bundle")
-        }
-        
-        container.managedObjectModel = NSManagedObjectModel(contentsOf: modelURL)!
-        
+                
         // Store description configuration
         let storeDescription = NSPersistentStoreDescription()
         storeDescription.type = NSSQLiteStoreType
@@ -51,6 +45,10 @@ public class CoreDataManager {
     public func initialize() {
         // Initialize Core Data
         _ = persistentContainer
+        print("Core Data manager initialized")
+        
+        // Ensure user settings exist
+        _ = getUserSettings()
         print("Core Data manager initialized")
     }
     
@@ -368,14 +366,7 @@ public class CoreDataManager {
         }
     }
     
-    // MARK: - Initialization
-    
-    public func initialize() {
-        // Ensure user settings exist
-        _ = getUserSettings()
-        print("Core Data manager initialized")
-    }
-}
+  }
 
 // MARK: - Supporting Structures
 

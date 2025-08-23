@@ -261,17 +261,12 @@ public class VectorDatabase {
     }
 }
 
-// MARK: - Knowledge Manager
+// MARK: - Knowledge Manager Extension
 
-public class KnowledgeManager {
-    public static let shared = KnowledgeManager()
+extension KnowledgeManager {
     
-    private let vectorDB = VectorDatabase.shared
-    
-    private init() {}
-    
-    public func initialize() async {
-        await vectorDB.initialize()
+    private var vectorDB: VectorDatabase {
+        return VectorDatabase.shared
     }
     
     public func addDocument(title: String, content: String, type: VectorDatabase.DocumentType, tags: [String] = []) async throws -> String {
@@ -300,10 +295,7 @@ public class KnowledgeManager {
         try await vectorDB.removeDocument(withId: id)
     }
     
-    public func getDocumentCount() -> Int {
-        return vectorDB.getDocumentCount()
-    }
-    
+        
     // MARK: - Document Processing
     
     public func processTextFile(_ url: URL) async throws -> String {

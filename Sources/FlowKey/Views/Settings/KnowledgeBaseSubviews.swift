@@ -417,24 +417,7 @@ struct TypeBadge: View {
     }
 }
 
-struct TagsView: View {
-    let tags: [String]
-    
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    Text(tag)
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(6)
-                }
-            }
-        }
-    }
-}
+// TagsView and EmptyStateView are now defined in SharedComponents.swift
 
 struct TagCard: View {
     let tag: String
@@ -456,36 +439,6 @@ struct TagCard: View {
         .padding()
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(8)
-    }
-}
-
-struct EmptyStateView: View {
-    let title: String
-    let subtitle: String
-    let action: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
-            
-            Text(title)
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text(subtitle)
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-            
-            Button("添加第一个条目") {
-                action()
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
     }
 }
 

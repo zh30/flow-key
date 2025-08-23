@@ -50,7 +50,8 @@ struct PhraseManagementView: View {
                 } else if filteredPhrases.isEmpty {
                     EmptyStateView(
                         title: "暂无常用语",
-                        subtitle: "添加您的第一个常用语以提高输入效率",
+                        description: "添加您的第一个常用语以提高输入效率",
+                        systemImage: "text.badge.plus",
                         action: { showAddPhraseSheet = true }
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -348,56 +349,7 @@ struct CategoryBadge: View {
 
 // MARK: - Tags View
 
-struct TagsView: View {
-    let tags: [String]
-    
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    Text(tag)
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(6)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Empty State View
-
-struct EmptyStateView: View {
-    let title: String
-    let subtitle: String
-    let action: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "text.badge.plus")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
-            
-            Text(title)
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text(subtitle)
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-            
-            Button("添加常用语") {
-                action()
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-    }
-}
+// TagsView and EmptyStateView are now defined in SharedComponents.swift
 
 #Preview {
     PhraseManagementView()

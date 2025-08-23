@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct TextStyleConversionView: View {
     @StateObject private var conversionService = TextStyleConversionService.shared
@@ -531,10 +532,12 @@ struct TextStyleConversionView: View {
                 await MainActor.run {
                     self.conversionResult = result
                     self.isConverting = false
-                    
-                    // Auto-analyze the converted text
-                    if showStyleAnalysis {
-                        let newAnalysis = await conversionService.analyzeTextStyle(result.convertedText)
+                }
+                
+                // Auto-analyze the converted text
+                if showStyleAnalysis {
+                    let newAnalysis = await conversionService.analyzeTextStyle(result.convertedText)
+                    await MainActor.run {
                         self.styleAnalysis = newAnalysis
                     }
                 }
@@ -558,11 +561,18 @@ struct TextStyleConversionView: View {
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
         
-        // Show notification
-        let notification = NSUserNotification()
+        // Show notification using modern UserNotifications framework
+        let notification = UNMutableNotificationContent()
         notification.title = "已复制到剪贴板"
-        notification.informativeText = "文本已成功复制到剪贴板"
-        NSUserNotificationCenter.default.deliver(notification)
+        notification.body = "文本已成功复制到剪贴板"
+        notification.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: notification, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to show notification: \(error)")
+            }
+        }
     }
     
     private func saveToHistory(result: TextStyleConversionService.ConversionResult) {
@@ -582,11 +592,18 @@ struct TextStyleConversionView: View {
             conversionHistory.removeLast()
         }
         
-        // Show notification
-        let notification = NSUserNotification()
+        // Show notification using modern UserNotifications framework
+        let notification = UNMutableNotificationContent()
         notification.title = "已保存到历史记录"
-        notification.informativeText = "转换结果已保存到历史记录"
-        NSUserNotificationCenter.default.deliver(notification)
+        notification.body = "转换结果已保存到历史记录"
+        notification.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: notification, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to show notification: \(error)")
+            }
+        }
     }
     
     private func clearAll() {
@@ -742,10 +759,18 @@ struct HistoryItemCard: View {
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
         
-        let notification = NSUserNotification()
+        // Show notification using modern UserNotifications framework
+        let notification = UNMutableNotificationContent()
         notification.title = "已复制到剪贴板"
-        notification.informativeText = "文本已成功复制到剪贴板"
-        NSUserNotificationCenter.default.deliver(notification)
+        notification.body = "文本已成功复制到剪贴板"
+        notification.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: notification, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to show notification: \(error)")
+            }
+        }
     }
 }
 
@@ -873,6 +898,6 @@ extension TextStyleConversionView {
     }
 }
 
-#Preview {
-    TextStyleConversionView()
-}
+// #Preview {
+//     TextStyleConversionView()
+// }

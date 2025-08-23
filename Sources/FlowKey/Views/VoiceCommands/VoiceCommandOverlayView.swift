@@ -101,11 +101,9 @@ struct VoiceCommandOverlayView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
                     
-                    if let confidence = command.confidence {
-                        Text("置信度: \(Int(confidence * 100))%")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                    Text("置信度: \(Int(command.confidence * 100))%")
+    .font(.caption)
+    .foregroundColor(.secondary)
                 }
                 .padding()
                 .background(Color(NSColor.controlBackgroundColor))
@@ -148,7 +146,7 @@ struct VoiceCommandOverlayView: View {
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 4) {
-                        ForEach(VoiceCommandRecognizer.VoiceCommandType.allCases.prefix(5), id: \.self) { commandType in
+                        ForEach(VoiceCommandType.allCases.prefix(5), id: \.self) { commandType in
                             HStack {
                                 Text("•")
                                 Text(commandType.displayName)
@@ -183,14 +181,16 @@ struct VoiceCommandOverlayView: View {
     
     private func startWaveformAnimation() {
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-            guard voiceCommandRecognizer.isListening else {
-                timer.invalidate()
-                return
-            }
-            
-            // Simulate audio waveform with random heights
-            for i in 0..<waveformBars.count {
-                waveformBars[i] = Double.random(in: 0.2...0.8)
+            Task { @MainActor in
+                guard self.voiceCommandRecognizer.isListening else {
+                    timer.invalidate()
+                    return
+                }
+                
+                // Simulate audio waveform with random heights
+                for i in 0..<self.waveformBars.count {
+                    self.waveformBars[i] = Double.random(in: 0.2...0.8)
+                }
             }
         }
     }

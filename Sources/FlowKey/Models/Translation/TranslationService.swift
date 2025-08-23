@@ -457,15 +457,5 @@ class LocalTranslationModel {
 
 // MARK: - MLX Integration
 extension TranslationService {
-    public func loadMLXModel() async throws {
-        try await mlxService.loadTranslationModel(.small)
-    }
-    
-    public func unloadMLXModel() {
-        mlxService.unloadTranslationModel()
-    }
-    
-    public func getMLXModelInfo() -> (isLoaded: Bool, modelSize: String) {
-        return (mlxService.isModelLoaded, mlxService.currentModelSize)
-    }
+    // MLX methods are already defined in the main class
 }

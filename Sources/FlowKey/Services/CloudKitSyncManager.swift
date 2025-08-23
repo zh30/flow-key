@@ -38,7 +38,7 @@ public class CloudKitSyncManager: ObservableObject {
             case .uploadingChanges: return "上传更改"
             case .resolvingConflicts: return "解决冲突"
             case .completed: return "已完成"
-            case .failed(let error): return "失败: \(error.localizedDescription)"
+            case .failed(let error): return "失败：\(error.localizedDescription)"
             }
         }
     }
@@ -75,19 +75,7 @@ public class CloudKitSyncManager: ObservableObject {
         setupNotificationObservers()
     }
     
-    public func initialize() async {
-        // Load saved settings
-        await loadSettings()
         
-        // Check CloudKit availability
-        let isAvailable = await checkCloudKitAvailability()
-        if isAvailable {
-            print("CloudKit is available")
-        } else {
-            print("CloudKit is not available")
-        }
-    }
-    
     private func loadSettings() async {
         // Load settings from UserDefaults
         if let data = UserDefaults.standard.data(forKey: "CloudKitSyncSettings") {

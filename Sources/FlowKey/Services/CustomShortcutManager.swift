@@ -13,6 +13,8 @@ public class CustomShortcutManager: ObservableObject {
     
     public func initialize() {
         // Initialize custom shortcut manager
+        setupDefaultShortcuts()
+        setupEventHandler()
         loadShortcuts()
         print("Custom shortcut manager initialized")
     }
@@ -30,7 +32,7 @@ public class CustomShortcutManager: ObservableObject {
     
     // MARK: - Shortcut Types
     
-    public enum ShortcutAction: String, CaseIterable {
+    public enum ShortcutAction: String, CaseIterable, Codable {
         case toggleVoiceCommand = "toggle_voice_command"
         case showTranslationOverlay = "show_translation_overlay"
         case showKnowledgeOverlay = "show_knowledge_overlay"
@@ -184,14 +186,7 @@ public class CustomShortcutManager: ObservableObject {
     // MARK: - Initialization
     
     private init() {
-        setupDefaultShortcuts()
-        setupEventHandler()
-        loadShortcuts()
-    }
-    
-    public func initialize() {
-        // Initialize shortcut manager
-        print("Custom shortcut manager initialized")
+        // Initialize will be called explicitly
     }
     
     deinit {

@@ -8,18 +8,18 @@ public class SmartTextDetector {
     
     // MARK: - Text Detection Types
     
-    public enum TextType {
-        case plain
-        case url
-        case email
-        case phoneNumber
-        case address
-        case date
-        case time
-        case currency
-        case code
-        case markdown
-        case mixed
+    public enum TextType: String {
+        case plain = "plain"
+        case url = "url"
+        case email = "email"
+        case phoneNumber = "phoneNumber"
+        case address = "address"
+        case date = "date"
+        case time = "time"
+        case currency = "currency"
+        case code = "code"
+        case markdown = "markdown"
+        case mixed = "mixed"
     }
     
     public struct TextDetectionResult {
@@ -64,17 +64,17 @@ public class SmartTextDetector {
         public let priority: Int
     }
     
-    public enum ActionType {
-        case translate
-        case search
-        case openUrl
-        case composeEmail
-        case makeCall
-        case addToCalendar
-        case copyToClipboard
-        case lookupDefinition
-        case formatText
-        case extractData
+    public enum ActionType: String {
+        case translate = "translate"
+        case search = "search"
+        case openUrl = "openUrl"
+        case composeEmail = "composeEmail"
+        case makeCall = "makeCall"
+        case addToCalendar = "addToCalendar"
+        case copyToClipboard = "copyToClipboard"
+        case lookupDefinition = "lookupDefinition"
+        case formatText = "formatText"
+        case extractData = "extractData"
     }
     
     // MARK: - Main Detection Method

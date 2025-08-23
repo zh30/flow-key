@@ -53,7 +53,8 @@ struct TemplateManagementView: View {
                 } else if filteredTemplates.isEmpty {
                     EmptyStateView(
                         title: "暂无模板",
-                        subtitle: "创建您的第一个模板以提高工作效率",
+                        description: "创建您的第一个模板以提高工作效率",
+                        systemImage: "doc.text.badge.plus",
                         action: { showAddTemplateSheet = true }
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -341,7 +342,7 @@ struct TemplateCard: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    CategoryBadge(category: template.category)
+                    TemplateCategoryBadge(category: template.category)
                     
                     if template.isFavorite {
                         Image(systemName: "star.fill")
@@ -516,55 +517,24 @@ struct CategoryBadge: View {
     }
 }
 
-struct TagsView: View {
-    let tags: [String]
+// TagsView and EmptyStateView are now defined in SharedComponents.swift
+
+// MARK: - Template Category Badge
+
+struct TemplateCategoryBadge: View {
+    let category: TemplateManager.TemplateCategory
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    Text(tag)
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(6)
-                }
-            }
-        }
+        Text(category.displayName)
+            .font(.caption)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Color(category.color).opacity(0.2))
+            .foregroundColor(Color(category.color))
+            .cornerRadius(4)
     }
 }
 
-struct EmptyStateView: View {
-    let title: String
-    let subtitle: String
-    let action: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "doc.text.badge.plus")
-                .font(.system(size: 60))
-                .foregroundColor(.secondary)
-            
-            Text(title)
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text(subtitle)
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-            
-            Button("添加模板") {
-                action()
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-    }
-}
-
-#Preview {
-    TemplateManagementView()
-}
+// #Preview {
+//     TemplateManagementView()
+// }
