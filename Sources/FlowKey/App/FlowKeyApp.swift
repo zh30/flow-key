@@ -44,9 +44,33 @@ struct FlowKeyApp: App {
         // Initialize global hotkey manager
         GlobalHotkeyManager.shared.setupGlobalHotkey()
         
+        // Initialize CloudKit sync manager
+        Task {
+            await CloudKitSyncManager.shared.initialize()
+        }
+        
+        // Initialize phrase manager
+        PhraseManager.shared.loadPhrases()
+        
         // Initialize AI services
         Task {
             try? await AIService.shared.initialize()
+        }
+        
+        // Initialize intelligent recommendation manager
+        Task {
+            await IntelligentRecommendationManager.shared.initialize()
+        }
+        
+        // Initialize custom shortcut manager
+        CustomShortcutManager.shared.initialize()
+        
+        // Initialize template manager
+        TemplateManager.shared.loadTemplates()
+        
+        // Initialize text style conversion service
+        Task {
+            await TextStyleConversionService.shared.initialize()
         }
     }
 }
@@ -104,6 +128,14 @@ struct ContentView: View {
             }
             .buttonStyle(.bordered)
             .disabled(voiceCommandManager.isOverlayVisible)
+            
+            Button(action: {
+                IntelligentRecommendationOverlayManager.shared.toggleRecommendationOverlay()
+            }) {
+                Label("智能推荐", systemImage: "brain")
+            }
+            .buttonStyle(.bordered)
+            .disabled(IntelligentRecommendationOverlayManager.shared.isOverlayVisible)
             
             if isTranslating {
                 ProgressView()
@@ -273,6 +305,39 @@ struct SettingsView: View {
                     Label("语音命令", systemImage: "waveform")
                 }
                 .tag(11)
+            
+            CloudKitSyncSettingsView()
+                .tabItem {
+                    Label("iCloud同步", systemImage: "icloud")
+                }
+                .tag(12)
+            
+            NavigationLink(destination: PhraseManagementView()) {
+                Label("常用语", systemImage: "text.bubble")
+            }
+            .tag(13)
+            
+            IntelligentRecommendationSettingsView()
+                .tabItem {
+                    Label("智能推荐", systemImage: "brain")
+                }
+                .tag(14)
+            
+            CustomShortcutSettingsView()
+                .tabItem {
+                    Label("快捷键", systemImage: "keyboard")
+                }
+                .tag(15)
+            
+            NavigationLink(destination: TemplateManagementView()) {
+                Label("模板", systemImage: "doc.text")
+            }
+            .tag(16)
+            
+            NavigationLink(destination: TextStyleConversionView()) {
+                Label("风格转换", systemImage: "textformat")
+            }
+            .tag(17)
         }
         .frame(width: 500, height: 400)
     }

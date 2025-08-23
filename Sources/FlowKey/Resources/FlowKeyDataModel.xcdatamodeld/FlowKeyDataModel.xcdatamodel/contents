@@ -23,12 +23,39 @@
         <attribute name="translatedText" attributeType="String"/>
         <attribute name="translationMode" attributeType="String"/>
     </entity>
+    <entity name="PhraseEntity" representedClassName="PhraseEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="category" attributeType="String"/>
+        <attribute name="content" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" optional="YES" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="priority" attributeType="Integer" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shortcut" optional="YES" attributeType="String"/>
+        <attribute name="tags" attributeType="Transformable" customClassName="NSArray"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="usageCount" attributeType="Integer" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="UserHabits" representedClassName="UserHabit" syncable="YES" codeGenerationType="class">
         <attribute name="actionType" attributeType="String"/>
         <attribute name="context" optional="YES" attributeType="String"/>
         <attribute name="details" attributeType="Transformable" customClassName="NSDictionary"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="timestamp" attributeType="Date" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="TemplateEntity" representedClassName="TemplateEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="category" attributeType="String"/>
+        <attribute name="content" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastUsed" optional="YES" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="tags" attributeType="Transformable" customClassName="NSArray"/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="YES"/>
+        <attribute name="usageCount" attributeType="Integer" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="variables" attributeType="Transformable" customClassName="NSArray"/>
     </entity>
     <entity name="UserSettings" representedClassName="UserSettings" syncable="YES" codeGenerationType="class">
         <attribute name="autoCheckUpdates" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
@@ -56,5 +83,7 @@
         <element name="UserSettings" positionX="-54" positionY="207" width="128" height="254"/>
         <element name="KnowledgeDocument" positionX="-36" positionY="486" width="128" height="148"/>
         <element name="UserHabits" positionX="160" positionY="-18" width="128" height="119"/>
+        <element name="PhraseEntity" positionX="160" positionY="207" width="128" height="180"/>
+        <element name="TemplateEntity" positionX="160" positionY="400" width="128" height="180"/>
     </elements>
 </model>
