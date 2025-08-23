@@ -17,7 +17,11 @@ public class CloudKitSyncManager: ObservableObject {
     
     public func initialize() async {
         // Initialize CloudKit sync manager
-        await checkCloudKitAvailability()
+        do {
+            try await checkCloudKitAvailability()
+        } catch {
+            print("CloudKit availability check failed: \(error)")
+        }
         print("CloudKit sync manager initialized")
     }
     
@@ -81,7 +85,7 @@ public class CloudKitSyncManager: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: "CloudKitSyncSettings") {
             let decoder = JSONDecoder()
             do {
-                let loaded = try decoder.decode(CloudKitSyncSettings.self, from: data)
+                _ = try decoder.decode(CloudKitSyncSettings.self, from: data)
                 await MainActor.run {
                     // Update settings if needed
                 }

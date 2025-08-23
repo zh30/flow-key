@@ -31,10 +31,7 @@ let package = Package(
                 // .product(name: "Alamofire", package: "Alamofire")
             ],
             path: "Sources/FlowKey",
-            sources: [
-                "App/SimpleFlowKeyApp.swift",
-                "Services/LocalizationService.swift"
-            ], // 包含多语言服务
+            sources: ["App/SimpleFlowKeyApp.swift"], // 只使用简化版本
             resources: [
                 .process("Resources")
             ]
