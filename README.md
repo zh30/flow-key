@@ -1,200 +1,200 @@
-# FlowKey 智能输入法
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-一个运行在 Mac 上的智能输入法应用程序，集成本地 AI 服务，提供划词翻译、智能改写、语音记录等功能。
+# FlowKey — Intelligent Input Method for macOS
 
-## 功能特性
+A macOS input method application that integrates local AI services, offering selection translation, smart rewriting, and voice dictation.
 
-### 核心功能
-- ✅ **划词翻译**: 选中任何文本即可翻译
-- ✅ **快捷翻译**: 三击空格键快速翻译当前输入
-- ✅ **本地优先**: 支持本地翻译模型，保护隐私
-- ✅ **多语言支持**: 支持中英日韩法德俄等多种语言
+## Features
 
-### AI 功能
-- 🚧 **本地翻译模型**: 基于 MLX 的离线翻译
-- 🚧 **语音识别**: 集成 Whisper 语音识别
-- 🚧 **智能改写**: AI 文本优化和改写
-- 🚧 **知识库**: 个人文档语义搜索
+### Core
+- ✅ Selection translation: translate any selected text instantly
+- ✅ Quick translate: triple-press Space to translate current input
+- ✅ Local-first: on-device translation models for privacy
+- ✅ Multilingual: Chinese, English, Japanese, Korean, French, German, Russian
 
-### 用户体验
-- ✅ **简洁界面**: 优雅的 SwiftUI 界面
-- ✅ **系统级集成**: 深度集成 macOS 系统
-- ✅ **iCloud 同步**: 跨设备数据同步
-- ✅ **隐私保护**: 本地数据处理
+### AI Capabilities
+- 🚧 Offline translation with MLX
+- 🚧 Speech recognition powered by Whisper
+- 🚧 Smart rewrite for text optimization
+- 🚧 Knowledge base with semantic search
 
-## 技术架构
+### User Experience
+- ✅ Clean UI built with SwiftUI
+- ✅ Deep macOS integration
+- ✅ iCloud sync across devices
+- ✅ Privacy-first, on-device processing
 
-### 核心技术栈
-- **Swift + SwiftUI**: 原生 macOS 应用开发
-- **MLX Swift**: 本地 AI 推理，Apple Silicon 优化
-- **IMKInputMethod**: macOS 官方输入法框架
-- **Composable Architecture**: 状态管理
-- **Core Data**: 本地数据存储
+## Architecture
 
-### 项目结构
+### Tech Stack
+- Swift + SwiftUI: native macOS app development
+- MLX Swift: local AI inference optimized for Apple Silicon
+- IMKInputMethod: official macOS input method framework
+- Composable Architecture: state management
+- Core Data: local persistence
+
+### Project Structure
 ```
 FlowKey/
-├── FlowKey/                    # 主应用
-│   ├── InputMethod/           # 输入法核心
-│   ├── Models/                # 数据模型
-│   ├── Services/              # 服务层
-│   ├── Views/                 # UI 界面
-│   └── App/                   # 应用入口
-├── FlowKeyTests/              # 测试
-├── FlowKeyInputMethod/        # 输入法扩展
-└── Documentation/             # 文档
+├── FlowKey/                    # Main app
+│   ├── InputMethod/           # IME core
+│   ├── Models/                # Data models
+│   ├── Services/              # Services layer
+│   ├── Views/                 # UI
+│   └── App/                   # App entry
+├── FlowKeyTests/              # Tests
+├── FlowKeyInputMethod/        # Input Method extension
+└── Documentation/             # Docs
 ```
 
-## 快速开始
+## Getting Started
 
-### 环境要求
-- macOS 13.0 或更高版本
-- Xcode 14.0 或更高版本
-- Swift 5.9 或更高版本
+### Requirements
+- macOS 13.0 or later
+- Xcode 14.0 or later
+- Swift 5.9 or later
 
-### 构建项目
+### Build
 
-1. 克隆项目：
+1. Clone the repo:
 ```bash
 git clone <repository-url>
 cd flow-key
 ```
 
-2. 构建应用：
+2. Build the app:
 ```bash
 ./build.sh
 ```
 
-3. 安装应用：
+3. Install the app and input method:
 ```bash
-# 复制到应用程序文件夹
+# Copy the app to Applications
 cp -r build/FlowKey.app /Applications/
 
-# 复制输入法
+# Install the input method
 mkdir -p ~/Library/Input\ Methods/
 cp -r build/FlowKeyInputMethod.bundle ~/Library/Input\ Methods/
 ```
 
-4. 启用输入法：
-   - 打开系统偏好设置 > 键盘 > 输入法
-   - 点击 "+" 添加输入法
-   - 选择 "FlowKey" 并启用
+4. Enable the input method:
+   - Open System Settings > Keyboard > Input Sources
+   - Click "+" to add an input source
+   - Select "FlowKey" and enable it
 
-## 使用说明
+## Usage
 
-### 基本翻译
-1. 在任何应用中选中文本
-2. 翻译结果会自动显示
-3. 点击复制按钮保存译文
+### Basic Translation
+1. Select text in any application
+2. The translation will appear automatically
+3. Click the copy button to save the result
 
-### 快捷翻译
-- 三击空格键：翻译当前选中的文本
-- Cmd+Shift+T：手动触发翻译
+### Quick Translate
+- Triple-press Space: translate the current selection
+- Cmd+Shift+T: manually trigger translation
 
-### 语音输入
-- 在设置中启用语音功能
-- 点击麦克风按钮开始录音
-- 说话后自动识别并翻译
+### Voice Input
+- Enable voice features in Settings
+- Click the microphone button to start recording
+- Speech will be recognized and translated automatically
 
-### 知识库
-- 导入个人文档到知识库
-- 使用语义搜索快速查找信息
-- 支持多种文档格式
+### Knowledge Base
+- Import your documents into the knowledge base
+- Use semantic search to find information
+- Supports multiple document formats
 
-## 开发指南
+## Development Guide
 
-### 项目结构说明
+### Modules Overview
 
 #### InputMethod/
-- `FlowInputController.swift`: 输入法控制器，处理用户输入
-- `FlowInputMethod.swift`: 输入法主类，系统注册
-- `FlowCandidateView.swift`: 候选词视图
+- `FlowInputController.swift`: Handles user input
+- `FlowInputMethod.swift`: Main class and system registration
+- `FlowCandidateView.swift`: Candidate view
 
 #### Models/
-- `Translation/`: 翻译相关模型和服务
-- `KnowledgeBase/`: 知识库管理
-- `Speech/`: 语音识别和处理
+- `Translation/`: Translation-related models and services
+- `KnowledgeBase/`: Knowledge base management
+- `Speech/`: Speech recognition and processing
 
 #### Services/
-- `AIService.swift`: AI 服务统一接口
-- `MLXService.swift`: MLX 框架集成
-- `StorageService.swift`: 数据存储服务
-- `SyncService.swift`: iCloud 同步服务
+- `AIService.swift`: Unified AI service interface
+- `MLXService.swift`: MLX integration
+- `StorageService.swift`: Data storage service
+- `SyncService.swift`: iCloud sync service
 
 #### Views/
-- `Settings/`: 设置界面
-- `Overlay/`: 悬浮窗界面
+- `Settings/`: Settings UI
+- `Overlay/`: Overlay UI
 
-### 开发工作流程
+### Development Workflow
 
-1. **环境设置**
+1. Environment setup
    ```bash
-   # 安装依赖
+   # Install dependencies
    swift package update
    
-   # 生成 Xcode 项目
+   # Generate Xcode project
    swift package generate-xcodeproj
    ```
 
-2. **开发**
+2. Development
    ```bash
-   # 运行开发服务器
+   # Run the app
    swift run
    
-   # 运行测试
+   # Run tests
    swift test
    ```
 
-3. **构建**
+3. Build
    ```bash
-   # 构建发布版本
+   # Build release
    swift build -c release
    ```
 
-### 贡献指南
+## Contributing
 
-1. Fork 项目
-2. 创建功能分支
-3. 提交更改
-4. 发起 Pull Request
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a Pull Request
 
-## 常见问题
+## FAQ
 
-### Q: 输入法无法启用？
-A: 确保已将输入法复制到 `~/Library/Input Methods/` 并在系统设置中启用。
+### Q: The input method cannot be enabled?
+A: Ensure it has been copied to `~/Library/Input Methods/` and enabled in System Settings.
 
-### Q: 翻译功能不工作？
-A: 检查网络连接，或确保已下载本地翻译模型。
+### Q: Translation does not work?
+A: Check your network connection or make sure the local translation model is downloaded.
 
-### Q: 语音识别失败？
-A: 确保已授予麦克风权限，并检查语音模型是否已下载。
+### Q: Speech recognition fails?
+A: Ensure microphone permission is granted and the speech model is downloaded.
 
-## 更新日志
+## Changelog
 
 ### v1.0.0 (2025-08-23)
-- ✅ 基础输入法框架
-- ✅ 划词翻译功能
-- ✅ 在线翻译 API 集成
-- ✅ 基础 UI 界面
-- ✅ 设置界面
+- ✅ Base input method framework
+- ✅ Selection translation
+- ✅ Online translation API integration
+- ✅ Basic UI
+- ✅ Settings page
 
-### 计划功能
-- 🚧 本地 AI 模型集成
-- 🚧 语音识别功能
-- 🚧 知识库系统
-- 🚧 iCloud 同步
-- 🚧 更多语言支持
+### Roadmap
+- 🚧 Local AI model integration
+- 🚧 Speech recognition
+- 🚧 Knowledge base system
+- 🚧 iCloud sync
+- 🚧 More language support
 
-## 许可证
+## License
+This project is under the MIT License. See [LICENSE](LICENSE).
 
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
-## 联系我们
-
-- 问题反馈：[GitHub Issues](https://github.com/zh30/flow-key/issues)
-- 功能请求：[GitHub Discussions](https://github.com/zh30/flow-key/discussions)
-- 邮箱：support@flowkey.app
+## Contact
+- Issue tracking: [GitHub Issues](https://github.com/zh30/flow-key/issues)
+- Feature requests: [GitHub Discussions](https://github.com/zh30/flow-key/discussions)
+- Email: support@flowkey.app
 
 ---
 
-**FlowKey** - 让输入更智能，让沟通更顺畅。
+FlowKey — Type smarter. Communicate better.
