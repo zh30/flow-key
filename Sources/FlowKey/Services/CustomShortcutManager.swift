@@ -9,6 +9,14 @@ import Combine
 public class CustomShortcutManager: ObservableObject {
     static let shared = CustomShortcutManager()
     
+    // MARK: - Initialization
+    
+    public func initialize() {
+        // Initialize custom shortcut manager
+        loadShortcuts()
+        print("Custom shortcut manager initialized")
+    }
+    
     // MARK: - Properties
     
     @Published var shortcuts: [CustomShortcut] = []

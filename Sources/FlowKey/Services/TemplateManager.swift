@@ -7,6 +7,16 @@ import Combine
 public class TemplateManager: ObservableObject {
     static let shared = TemplateManager()
     
+    // MARK: - Initialization
+    
+    public func loadTemplates() {
+        // Load templates from storage
+        templateQueue.async {
+            self.fetchTemplates()
+        }
+        print("Template manager loaded templates")
+    }
+    
     // MARK: - Properties
     
     @Published var templates: [Template] = []

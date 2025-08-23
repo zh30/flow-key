@@ -147,6 +147,14 @@ public class VoiceCommandRecognizer: ObservableObject {
     @Published public var settings: VoiceCommandSettings
     
     private let speechRecognizer = SpeechRecognizer.shared
+    
+    // MARK: - Initialization
+    
+    public func initialize() async {
+        // Initialize voice command recognizer
+        await loadSettings()
+        print("Voice command recognizer initialized")
+    }
     private let commandParser = VoiceCommandParser()
     private let commandExecutor = VoiceCommandExecutor()
     private var cancellables = Set<AnyCancellable>()

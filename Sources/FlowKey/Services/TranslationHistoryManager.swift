@@ -5,6 +5,12 @@ public class TranslationHistoryManager {
     
     private init() {}
     
+    public func initialize() {
+        // Initialize translation history
+        loadHistory()
+        print("Translation history manager initialized")
+    }
+    
     // MARK: - Data Storage
     
     private var historyRecords: [TranslationRecord] = []
@@ -157,13 +163,6 @@ public class TranslationHistoryManager {
             print("Failed to load translation history: \(error)")
             historyRecords = []
         }
-    }
-    
-    // MARK: - Initialization
-    
-    public func initialize() {
-        loadHistory()
-        print("Translation history manager initialized with \(historyRecords.count) records")
     }
 }
 

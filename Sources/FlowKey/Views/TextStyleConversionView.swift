@@ -790,7 +790,7 @@ struct StyleRecommendationsSheet: View {
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(recommendations, id: \.style.displayName) { recommendation in
-                                RecommendationCard(recommendation: recommendation) {
+                                StyleRecommendationCard(recommendation: recommendation) {
                                     onStyleSelected(recommendation.style)
                                     dismiss()
                                 }
@@ -801,8 +801,7 @@ struct StyleRecommendationsSheet: View {
                 }
             }
             .navigationTitle("风格推荐")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
+                        .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") {
                         dismiss()
@@ -814,7 +813,7 @@ struct StyleRecommendationsSheet: View {
     }
 }
 
-struct RecommendationCard: View {
+struct StyleRecommendationCard: View {
     let recommendation: StyleRecommendation
     let onSelect: () -> Void
     

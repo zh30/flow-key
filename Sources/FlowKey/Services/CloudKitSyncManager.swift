@@ -13,6 +13,14 @@ public class CloudKitSyncManager: ObservableObject {
     @Published public private(set) var syncStatus: SyncStatus = .notStarted
     @Published public private(set) var syncError: Error?
     
+    // MARK: - Initialization
+    
+    public func initialize() async {
+        // Initialize CloudKit sync manager
+        await checkCloudKitAvailability()
+        print("CloudKit sync manager initialized")
+    }
+    
     public enum SyncStatus {
         case notStarted
         case checkingAccount

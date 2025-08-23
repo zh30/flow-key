@@ -48,6 +48,12 @@ public class CoreDataManager {
     
     // MARK: - Public Properties
     
+    public func initialize() {
+        // Initialize Core Data
+        _ = persistentContainer
+        print("Core Data manager initialized")
+    }
+    
     public var context: NSManagedObjectContext {
         return persistentContainer.viewContext
     }

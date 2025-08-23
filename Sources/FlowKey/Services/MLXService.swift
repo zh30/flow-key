@@ -34,6 +34,14 @@ public class MLXService {
     private var isModelLoaded = false
     private var model: Module?
     
+    public var currentModelSize: String {
+        switch translationModel {
+        case .small: return "50M"
+        case .medium: return "150M"
+        case .large: return "300M"
+        }
+    }
+    
     // MARK: - Model Management
     
     public func loadTranslationModel(_ model: TranslationModel) async throws {
@@ -55,6 +63,10 @@ public class MLXService {
         model = nil
         isModelLoaded = false
         print("Model unloaded")
+    }
+    
+    public func unloadTranslationModel() {
+        unloadModel()
     }
     
     // MARK: - Translation

@@ -157,7 +157,11 @@ struct IntelligentRecommendationView: View {
         
         return IntelligentRecommendationManager.RecommendationContext(
             currentApp: currentApp,
-            selectedText: selectedText
+            currentWindow: nil,
+            selectedText: selectedText,
+            cursorPosition: nil,
+            surroundingText: nil,
+            recentActions: []
         )
     }
     

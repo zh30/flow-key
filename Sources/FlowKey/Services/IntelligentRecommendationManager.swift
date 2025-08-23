@@ -8,6 +8,11 @@ public class IntelligentRecommendationManager {
     
     private init() {}
     
+    public func initialize() async {
+        // Initialize recommendation manager
+        print("Intelligent recommendation manager initialized")
+    }
+    
     // MARK: - Properties
     
     private let context = CoreDataManager.shared.viewContext

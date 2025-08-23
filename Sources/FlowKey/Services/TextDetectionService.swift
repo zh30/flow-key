@@ -24,10 +24,14 @@ public class TextDetectionService {
         let suggestions = await generateContextualSuggestions(for: enhancedResult, context: context)
         
         // Record user interaction for learning
-        await userHabitManager.recordTextDetection(
-            text: text,
-            result: enhancedResult,
-            context: context
+        userHabitManager.recordTextDetectionHabit(
+            detectedText: text,
+            textType: enhancedResult.type.rawValue,
+            entities: enhancedResult.entities.map { $0.type.rawValue },
+            suggestedActions: enhancedResult.suggestedActions.map { $0.title },
+            selectedAction: nil,
+            confidence: enhancedResult.confidence,
+            appContext: context?.currentApp
         )
         
         return TextProcessingResult(
@@ -87,51 +91,37 @@ public class TextDetectionService {
     private func applyUserHabits(to result: SmartTextDetector.TextDetectionResult, 
                                text: String) async -> SmartTextDetector.TextDetectionResult {
         
-        let habits = await userHabitManager.getRelevantHabits(for: text)
+        // Get user preferences instead of habits for now
+        let preferences = userHabitManager.getLearnedPreferences()
         
         var modifiedConfidence = result.confidence
         var modifiedActions = result.suggestedActions
         
-        // Adjust confidence based on user patterns
-        for habit in habits {
-            switch habit.type {
-            case .translation:
-                if habit.details["language_preference"] as? String == result.language {
+        // Adjust confidence based on user preferences
+        if let language = result.language {
+            for preferredLanguagePair in preferences.preferredLanguages {
+                if preferredLanguagePair.contains(language) {
                     modifiedConfidence = min(modifiedConfidence + 0.1, 1.0)
+                    break
                 }
-                
-            case .action:
-                if let preferredAction = habit.details["preferred_action"] as? String {
-                    // Boost priority of preferred action
-                    modifiedActions = modifiedActions.map { action in
-                        if actionTypeToString(action.type) == preferredAction {
-                            return SmartTextDetector.SuggestedAction(
-                                type: action.type,
-                                title: action.title,
-                                description: action.description,
-                                priority: max(action.priority - 1, 1) // Higher priority
-                            )
-                        }
-                        return action
-                    }
-                }
-                
-            case .formatting:
-                if habit.details["format_preference"] as? String == textTypeToString(result.type) {
-                    // Apply formatting preferences
-                    modifiedActions.append(
-                        SmartTextDetector.SuggestedAction(
-                            type: .formatText,
-                            title: "按习惯格式化",
-                            description: "根据您的使用习惯格式化文本",
-                            priority: 1
+            }
+        }
+        
+        // Apply action preferences if available
+        if let actionPrefs = preferences.actionPreferences as? [String: String] {
+            for (actionType, preferredAction) in actionPrefs {
+                // Boost priority of preferred action
+                modifiedActions = modifiedActions.map { action in
+                    if actionTypeToString(action.type) == actionType {
+                        return SmartTextDetector.SuggestedAction(
+                            type: action.type,
+                            title: action.title,
+                            description: action.description,
+                            priority: max(action.priority - 1, 1) // Higher priority
                         )
-                    )
+                    }
+                    return action
                 }
-                
-            case .search:
-                // Handle search habits
-                break
             }
         }
         
@@ -472,37 +462,3 @@ public class UserSettingsManager {
     }
 }
 
-// MARK: - User Habit Manager
-
-public class UserHabitManager {
-    public static let shared = UserHabitManager()
-    
-    private init() {}
-    
-    public func recordTextDetection(text: String, 
-                                  result: SmartTextDetector.TextDetectionResult,
-                                  context: AppContext?) async {
-        // Record user interaction for learning
-        // This would integrate with Core Data to store habits
-    }
-    
-    public func getRelevantHabits(for text: String) async -> [TextDetectionUserHabit] {
-        // Return relevant user habits based on text content
-        // This would query Core Data for matching habits
-        return []
-    }
-}
-
-public struct TextDetectionUserHabit {
-    public let type: HabitType
-    public let details: [String: Any]
-    public let frequency: Int
-    public let lastUsed: Date
-}
-
-public enum HabitType {
-    case translation
-    case action
-    case formatting
-    case search
-}

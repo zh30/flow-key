@@ -12,6 +12,16 @@ public class PhraseManager: ObservableObject {
     @Published public private(set) var isProcessing = false
     @Published public private(set) var lastError: Error?
     
+    // MARK: - Initialization
+    
+    public func loadPhrases() {
+        // Load phrases from storage
+        Task {
+            await fetchPhrases()
+        }
+        print("Phrase manager loaded phrases")
+    }
+    
     // MARK: - Phrase Models
     
     public struct Phrase: Identifiable, Codable {

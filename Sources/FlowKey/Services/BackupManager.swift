@@ -5,6 +5,11 @@ public class BackupManager {
     
     private init() {}
     
+    public func initialize() {
+        // Initialize backup functionality
+        print("Backup manager initialized")
+    }
+    
     // MARK: - Backup Configuration
     
     private let backupDirectoryName = "FlowKeyBackups"
