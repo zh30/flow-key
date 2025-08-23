@@ -36,6 +36,14 @@ struct FlowKeyApp: App {
         // Initialize user habit manager
         UserHabitManager.shared.initialize()
         
+        // Initialize voice command recognizer
+        Task {
+            await VoiceCommandRecognizer.shared.initialize()
+        }
+        
+        // Initialize global hotkey manager
+        GlobalHotkeyManager.shared.setupGlobalHotkey()
+        
         // Initialize AI services
         Task {
             try? await AIService.shared.initialize()
@@ -50,6 +58,7 @@ struct ContentView: View {
     @State private var selectedText = ""
     @State private var translatedText = ""
     @State private var isTranslating = false
+    @StateObject private var voiceCommandManager = VoiceCommandManager.shared
     
     var body: some View {
         VStack(spacing: 20) {
@@ -88,6 +97,14 @@ struct ContentView: View {
             .buttonStyle(.borderedProminent)
             .disabled(isTranslating)
             
+            Button(action: {
+                voiceCommandManager.toggleVoiceCommand()
+            }) {
+                Label("语音命令", systemImage: "waveform")
+            }
+            .buttonStyle(.bordered)
+            .disabled(voiceCommandManager.isOverlayVisible)
+            
             if isTranslating {
                 ProgressView()
                     .scaleEffect(0.8)
@@ -105,6 +122,46 @@ struct ContentView: View {
                 .background(Color(NSColor.controlBackgroundColor))
                 .cornerRadius(8)
             }
+            
+            // Voice Command Status
+            VStack(alignment: .leading, spacing: 4) {
+                Text("语音命令:")
+                    .font(.headline)
+                
+                HStack {
+                    Text("热键: Command+Shift+V")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    if voiceCommandManager.isOverlayVisible {
+                        HStack {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 6, height: 6)
+                            Text("正在录音")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    } else if voiceCommandManager.isMiniViewVisible {
+                        HStack {
+                            ProgressView()
+                                .scaleEffect(0.5)
+                            Text("处理中")
+                                .font(.caption)
+                                .foregroundColor(.orange)
+                        }
+                    } else {
+                        Text("就绪")
+                            .font(.caption)
+                            .foregroundColor(.green)
+                    }
+                }
+            }
+            .padding()
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(8)
             
             Spacer()
             
@@ -169,6 +226,12 @@ struct SettingsView: View {
                 }
                 .tag(9)
             
+            KnowledgeBaseManagementView()
+                .tabItem {
+                    Label("知识库", systemImage: "brain")
+                }
+                .tag(10)
+            
             KnowledgeSettingsView()
                 .tabItem {
                     Label("知识库", systemImage: "book.fill")
@@ -204,6 +267,12 @@ struct SettingsView: View {
                     Label("同步", systemImage: "cloud")
                 }
                 .tag(7)
+            
+            VoiceCommandSettingsView()
+                .tabItem {
+                    Label("语音命令", systemImage: "waveform")
+                }
+                .tag(11)
         }
         .frame(width: 500, height: 400)
     }
