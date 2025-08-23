@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:flow-key}",
+      "name": "Debug FlowKey",
+      "program": "${workspaceFolder:flow-key}/.build/debug/FlowKey",
+      "preLaunchTask": "swift: Build Debug FlowKey"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:flow-key}",
+      "name": "Release FlowKey",
+      "program": "${workspaceFolder:flow-key}/.build/release/FlowKey",
+      "preLaunchTask": "swift: Build Release FlowKey"
+    }
+  ]
+}

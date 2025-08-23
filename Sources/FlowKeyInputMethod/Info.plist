@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.flowkey.inputmethod</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>FlowKey</string>
+    <key>CFBundlePackageType</key>
+    <string>com.apple.inputmethod</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>InputMethodConnectionName</key>
+    <string>FlowKey_Connection</string>
+    <key>InputMethodServerControllerClass</key>
+    <string>FlowInputMethod</string>
+    <key>InputMethodServerDelegateClass</key>
+    <string>FlowInputController</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © 2025 FlowKey Team. All rights reserved.</string>
+    <key>TISInputSourceID</key>
+    <string>com.flowkey.inputmethod</string>
+    <key>TISIntendedLanguage</key>
+    <string>en-US</string>
+    <key>tsInputMethodIconFileKey</key>
+    <string>FlowKey.icns</string>
+    <key>tsInputMethodCategoryKey</key>
+    <string>TSMDInputMethodCategory</string>
+    <key>tsInputMethodScriptTypeKey</key>
+    <string>smRoman</string>
+    <key>tsInputMethodCharacterRepertoireKey</key>
+    <array>
+        <string>Latn</string>
+        <string>Hani</string>
+        <string>Hira</string>
+        <string>Kana</string>
+        <string>Hang</string>
+        <string>Cyrl</string>
+        <string>Grek</string>
+        <string>Arab</string>
+        <string>Hebr</string>
+    </array>
+    <key>tsInputMethodSupportedLanguagesKey</key>
+    <array>
+        <string>en-US</string>
+        <string>zh-CN</string>
+        <string>ja-JP</string>
+        <string>ko-KR</string>
+        <string>fr-FR</string>
+        <string>de-DE</string>
+        <string>es-ES</string>
+        <string>ru-RU</string>
+    </array>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>LSUIElement</key>
+    <true/>
+</dict>
+</plist>
