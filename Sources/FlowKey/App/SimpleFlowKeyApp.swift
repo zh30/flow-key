@@ -1,11 +1,11 @@
 import SwiftUI
 import Foundation
 
-// 简化版 FlowKey 应用程序，用于快速构建和测试
+// Legacy simplified app - maintained for compatibility
 @main
 struct SimpleFlowKeyApp: App {
     @StateObject private var localizationService = LocalizationService()
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()

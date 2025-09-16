@@ -1,12 +1,12 @@
-// swift-tools-version: 5.9
-// 简化版 FlowKey Package.swift 用于快速构建
+// swift-tools-version: 6.0
+// FlowKey Package.swift with macOS 26 support
 
 import PackageDescription
 
 let package = Package(
     name: "FlowKey",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v15)
     ],
     products: [
         .executable(
@@ -33,8 +33,15 @@ let package = Package(
             path: "Sources/FlowKey",
             sources: [
                 "App/SimpleFlowKeyApp.swift",
-                "Services/LocalizationService.swift"
-            ], // 包含多语言服务
+                "App/AppDelegate.swift",
+                "Services/LocalizationService.swift",
+                "Services/ModernLocalizationService.swift",
+                "Services/ModernTranslationService.swift",
+                "InputMethod/FlowInputController.swift",
+                "InputMethod/ModernFlowInputController.swift",
+                "Views/ModernContentView.swift",
+                "Views/ModernSettingsView.swift"
+            ], // 包含多语言服务和现代化组件
             resources: [
                 .process("Resources")
             ]
