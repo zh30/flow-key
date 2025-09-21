@@ -1,5 +1,7 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
+import UserNotifications
 
 // Modern Settings View with macOS 26 features
 struct ModernSettingsView: View {
@@ -44,7 +46,6 @@ struct ModernSettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Done") {
@@ -138,11 +139,12 @@ struct ModernSettingsView: View {
         do {
             let jsonData = try JSONEncoder().encode(settings)
             let panel = NSSavePanel()
-            panel.allowedContentTypes = [.json]
+            let jsonType = UTType(filenameExtension: "json") ?? .data
+            panel.allowedContentTypes = [jsonType]
             panel.nameFieldStringValue = "FlowKey-Settings.json"
 
-            if panel.runModal() == .OK {
-                try jsonData.write(to: panel.url!)
+            if panel.runModal() == .OK, let url = panel.url {
+                try jsonData.write(to: url)
             }
         } catch {
             print("Error exporting settings: \(error)")
@@ -151,12 +153,13 @@ struct ModernSettingsView: View {
 
     private func importSettings() {
         let panel = NSOpenPanel()
-        panel.allowedContentTypes = [.json]
+        let jsonType = UTType(filenameExtension: "json") ?? .data
+        panel.allowedContentTypes = [jsonType]
         panel.allowsMultipleSelection = false
 
-        if panel.runModal() == .OK {
+        if panel.runModal() == .OK, let url = panel.urls.first {
             do {
-                let data = try Data(contentsOf: panel.urls.first!)
+                let data = try Data(contentsOf: url)
                 let settings = try JSONDecoder().decode(SettingsBundle.self, from: data)
 
                 generalSettings = settings.general
@@ -332,8 +335,8 @@ struct LanguageSettingsView: View {
                 .tag(language)
             }
         }
-        .pickerStyle(.navigationLink)
-        .onChange(of: selectedLanguage) { newLanguage in
+        .pickerStyle(.radioGroup)
+        .onChange(of: selectedLanguage) { _, newLanguage in
             localizationService.setLanguage(newLanguage)
         }
     }

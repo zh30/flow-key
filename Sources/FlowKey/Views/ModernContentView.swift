@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UserNotifications
 
 // Modern ContentView with macOS 26 features
 struct ModernContentView: View {
@@ -58,19 +59,7 @@ struct ModernContentView: View {
                 .padding()
             }
         )
-        // Modern keyboard shortcuts
-        .onKeyPress(.escape) {
-            showSettings = false
-            return .handled
-        }
-        .onKeyPress(.comma, modifiers: [.command]) {
-            showSettings = true
-            return .handled
-        }
-        .onKeyPress("t", modifiers: [.command]) {
-            testTranslation()
-            return .handled
-        }
+        // Keyboard shortcuts could be reintroduced once the app targets the latest macOS APIs.
     }
 
     private var headerView: some View {

@@ -1,37 +1,20 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-FlowKey ships as a Swift Package targeting macOS 14+. Core app code lives in `Sources/FlowKey`, split into feature folders (`App`, `InputMethod`, `Models`, `Services`, `Views`, `Utilities`, `Resources`) so keep new files with their peers. Tests reside in `Sources/FlowKeyTests/UnitTests` alongside asynchronous XCTest cases, while supporting docs are under `Documentation/` and reusable scripts live at the repository root (`run_app.sh`, `test_project.sh`, `build.sh`).
-```
-Sources/
-  FlowKey/
-    App/ … SwiftUI entry point and UI
-    Services/ … localization, AI, sync and helpers
-    Resources/ … processed by SwiftPM
-  FlowKeyTests/UnitTests/
-Documentation/
-Extensions/
-```
+FlowKey ships as a Swift Package targeting macOS 14+. Primary app code lives under `Sources/FlowKey`, organized by feature folders (`App`, `Services`, `Views`, `Utilities`, `Resources`). New Swift files should sit with their peers; e.g., an input-method update belongs in `Sources/FlowKey/InputMethod`. Tests mirror the structure under `Sources/FlowKeyTests/UnitTests`, while shared docs live in `Documentation/` and reusable scripts (`run_app.sh`, `test_project.sh`, `build.sh`) stay at the repo root.
 
 ## Build, Test, and Development Commands
-- `swift build` — compile the debug binary into `.build/debug/FlowKey`.
-- `swift run` — build and launch the simplified SwiftUI shell for manual QA.
-- `swift build -c release` — optimize for distribution; pair with `build.sh` to assemble `.app` and input-method bundles.
-- `./run_app.sh` — rebuild if needed, restart the debug binary, and background the process for UI testing.
-- `swift test` — execute the XCTest suite; run `./test_project.sh` when you need an environment sanity check and dependency summary.
+- `swift build`: compile the debug binary into `.build/debug/FlowKey`.
+- `swift run`: rebuild if necessary and launch the SwiftUI shell for manual QA.
+- `swift build -c release`: produce an optimized build; pair with `./build.sh` to bundle the app and input method.
+- `./run_app.sh`: restart the debug binary in the background for UI iteration.
+- `swift test`: execute the XCTest suite; run `./test_project.sh` when you need an environment sanity check.
 
 ## Coding Style & Naming Conventions
-- Use Swift 5.9 defaults: four-space indentation, braces on new lines for types, trailing commas for multiline literals.
-- Follow Swift naming: `UpperCamelCase` for types (`LocalizationService`), `lowerCamelCase` for methods/properties, enum cases in lowercase (see `SupportedLanguage`).
-- Prefer SwiftUI and `@MainActor` observable objects for UI state; keep side effects in services (`Services/`).
-- Store localized strings in dictionaries keyed by `LocalizationKey` and add assets inside `Resources/` so SwiftPM bundles them automatically.
+Target Swift 5.9 defaults: four-space indentation, braces on new lines for types, trailing commas on multiline literals. Use `UpperCamelCase` for types, `lowerCamelCase` for members, and lowercase enum cases. Keep UI state in SwiftUI views or `@MainActor` observable objects, and push side effects into services within `Sources/FlowKey/Services`. Store localized strings using `LocalizationKey` dictionaries and add assets to `Resources/` to receive SwiftPM bundling.
 
 ## Testing Guidelines
-- Place new tests under `Sources/FlowKeyTests/UnitTests`, mirroring the feature under test.
-- Name methods `test<Scenario>` and leverage `async` expectations to match existing coverage around translation and input services.
-- Run `swift test` locally before pushing; if UI or process behaviour changes, document manual verification in the PR and optionally run `./test_project.sh` for structural checks.
+Unit coverage relies on XCTest. Place new specs alongside the feature under `Sources/FlowKeyTests/UnitTests`. Name methods `test<Scenario>` and adopt async expectations for translation or input workflows. Always run `swift test` locally; document any manual verification when UI behaviour changes.
 
 ## Commit & Pull Request Guidelines
-- Commit summaries are sentence-style and descriptive (e.g., `Add multilingual support with new README files for Arabic, Spanish, and Hindi`); keep them focused on the primary change.
-- Reference related issues in the body, list major modules touched, and note any scripts/tests executed.
-- Pull requests should include: concise problem statement, implementation notes, screenshots for UI tweaks, and confirmation that `swift build`/`swift test` completed. Mention localisation updates or bundle changes so reviewers can verify resources and Info.plist updates.
+Write sentence-case commit subjects focused on the primary change, and mention impacted modules plus scripts/tests executed in the body. Pull requests should explain the problem, summarize the solution, include screenshots for UI tweaks, and confirm `swift build` and `swift test` completed. Note localization or bundle updates so reviewers can validate resources and Info.plist entries.
