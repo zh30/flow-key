@@ -1,0 +1,179 @@
+/* Workspaces and commands */
+"Transform" = "转换";
+"Translate Workspace" = "翻译工作区";
+"Rewrite Workspace" = "改写工作区";
+"Run Action" = "执行操作";
+"Workspace" = "工作区";
+"Translate" = "翻译";
+"Rewrite" = "改写";
+"Improve" = "优化";
+"Shorten" = "精简";
+"Formalize" = "正式化";
+"Proofread" = "校对";
+"Clear" = "清除";
+"Clear Translation" = "清除翻译";
+"Clear Rewrite" = "清除改写";
+
+/* Common actions and state */
+"Paste" = "粘贴";
+"Paste text from the clipboard" = "从剪贴板粘贴文本";
+"Copy" = "复制";
+"Copied" = "已复制";
+"Ready" = "就绪";
+"Off" = "关闭";
+"Cancel" = "取消";
+"Add" = "添加";
+"Delete" = "删除";
+"Install" = "安装";
+"Open Settings" = "打开设置";
+"Settings…" = "设置…";
+"Open FlowKey" = "打开 FlowKey";
+"Quit FlowKey" = "退出 FlowKey";
+
+/* Translation workspace */
+"Clear the translation" = "清除翻译内容";
+"From" = "源语言";
+"Detect Automatically" = "自动检测";
+"Swap languages" = "交换语言";
+"To" = "目标语言";
+"Original" = "原文";
+"%d characters" = "%d 个字符";
+"Text to translate" = "要翻译的文本";
+"Text to rewrite" = "要改写的文本";
+"Text to transform" = "要转换的文本";
+"Type or paste text here" = "在此输入或粘贴文本";
+"Translation" = "翻译结果";
+"Translating…" = "正在翻译…";
+"Ready to Translate" = "可以开始翻译";
+"Your translation will appear here." = "翻译结果会显示在这里。";
+"Translation complete" = "翻译完成";
+"Translation failed." = "翻译失败。";
+"Enter text to translate." = "请输入要翻译的文本。";
+"Choose different source and target languages." = "请选择不同的源语言和目标语言。";
+"Language download was canceled. Translate again when you're ready." = "语言下载已取消，准备好后可再次翻译。";
+"The clipboard does not contain text." = "剪贴板中没有文本。";
+"Enter text to transform." = "请输入要转换的文本。";
+
+/* Rewrite workspace */
+"Rewrite action" = "改写方式";
+"Rewritten" = "改写结果";
+"Use as Original" = "用作原文";
+"Rewriting on this Mac…" = "正在本机改写…";
+"Ready to Rewrite" = "可以开始改写";
+"The rewritten text will appear here." = "改写结果会显示在这里。";
+"On-device" = "设备端处理";
+"Rewrite unavailable" = "无法使用改写";
+"Rewriting…" = "正在改写…";
+"Rewrite complete" = "改写完成";
+"Rewrite failed." = "改写失败。";
+"Enter text to rewrite." = "请输入要改写的文本。";
+"On-device model ready" = "设备端模型已就绪";
+"Requires macOS 26 or later" = "需要 macOS 26 或更高版本";
+"This Mac does not support the on-device model" = "这台 Mac 不支持设备端模型";
+"Apple Intelligence is not enabled" = "尚未启用 Apple 智能";
+"The on-device model is not ready" = "设备端模型尚未就绪";
+"Update macOS to use private, on-device rewriting." = "更新 macOS 以使用私密的设备端改写。";
+"Translation remains available; FlowKey will not send rewrite text to another server." = "翻译仍可使用；FlowKey 不会把改写文本发送到其他服务器。";
+"Enable Apple Intelligence in System Settings, then return to FlowKey." = "请在系统设置中启用 Apple 智能，然后返回 FlowKey。";
+"Wait for macOS to finish preparing its model, then try again." = "请等待 macOS 完成模型准备，然后重试。";
+"The on-device model returned an empty result." = "设备端模型返回了空结果。";
+
+/* Quick Action */
+"Quick Action" = "快捷操作";
+"Allow Access" = "允许访问";
+"Request Access…" = "请求访问…";
+"Open Privacy Settings…" = "打开隐私设置…";
+"Use Clipboard" = "使用剪贴板";
+"Action" = "操作";
+"Type text or use the clipboard" = "输入文本或使用剪贴板";
+"The translation will appear here." = "翻译结果会显示在这里。";
+"Replace Selection" = "替换选区";
+"⌘↩ to %@" = "按 ⌘↩ 执行%@";
+"Selected text" = "选中的文本";
+"Clipboard text" = "剪贴板文本";
+"Allow selected-text access" = "允许访问选中的文本";
+"No text is selected" = "未选择文本";
+"Secure text stays private" = "安全文本始终保持私密";
+"Selected text is unavailable here" = "无法在此处读取选中文本";
+"FlowKey could not read the selection" = "FlowKey 无法读取选区";
+"Allow FlowKey in Privacy & Security, then select text and use the shortcut again." = "请在“隐私与安全性”中允许 FlowKey，然后重新选择文本并使用快捷键。";
+"Select text in another app and use the shortcut again, or use the clipboard." = "请在其他 App 中选择文本后再次使用快捷键，或改用剪贴板。";
+"FlowKey never reads password or other secure text fields. Use non-sensitive text instead." = "FlowKey 绝不会读取密码或其他安全文本框，请改用非敏感文本。";
+"This app does not expose its selection to macOS. Copy the text, then use the clipboard." = "这个 App 未向 macOS 提供选区，请复制文本后使用剪贴板。";
+"Return to the source app and try the shortcut again, or use the clipboard." = "请返回来源 App 后重试快捷键，或改用剪贴板。";
+"Accessibility access is no longer allowed." = "辅助功能访问权限已失效。";
+"The original selection is no longer available. Select the text and try again." = "原选区已失效，请重新选择文本后再试。";
+"This app does not support replacing selected text. Copy the translation instead." = "这个 App 不支持替换选中文本，请改为复制结果。";
+"FlowKey could not replace the selected text. Copy the translation instead." = "FlowKey 无法替换选中文本，请改为复制结果。";
+"FlowKey could not write to the clipboard." = "FlowKey 无法写入剪贴板。";
+"The original selection is no longer available." = "原选区已失效。";
+
+/* Dictation */
+"Microphone" = "麦克风";
+"Speech Recognition" = "语音识别";
+"Requesting access…" = "正在请求访问权限…";
+"Listening on device…" = "正在设备端聆听…";
+"Listening…" = "正在聆听…";
+"Allow %@ in Privacy & Security." = "请在“隐私与安全性”中允许%@。";
+"Speech recognition is unavailable for this language." = "当前语言无法使用语音识别。";
+"Stop dictation" = "停止听写";
+"Dictate text" = "听写文本";
+"Start dictation" = "开始听写";
+
+/* Settings */
+"Translation" = "翻译";
+"Default target language" = "默认目标语言";
+"Copy translations from the main window automatically" = "自动复制主窗口中的翻译结果";
+"Global shortcut" = "全局快捷键";
+"Shortcut status" = "快捷键状态";
+"Shortcut unavailable" = "快捷键不可用";
+"Selected-text access" = "选中文本访问权限";
+"Allowed" = "已允许";
+"Not allowed" = "未允许";
+"Allow…" = "允许…";
+"Accessibility is used only when you invoke Quick Action, so FlowKey can read the current selection. Replacing text always requires a separate click." = "只有在你调用“快捷操作”时，FlowKey 才会使用辅助功能读取当前选区；替换文本始终需要再次明确点击。";
+"Another app is already using this shortcut. Choose a different one." = "其他 App 已占用这个快捷键，请选择其他快捷键。";
+"Privacy" = "隐私";
+"Translation uses Apple's Translation framework. Rewrite uses Apple's on-device model when this Mac supports it. Dictation starts only when you click the microphone. FlowKey does not add its own language server." = "翻译使用 Apple Translation 框架；在这台 Mac 支持时，改写使用 Apple 的设备端模型；听写只会在你点击麦克风后启动。FlowKey 不会添加自己的语言服务器。";
+"Optional Input Method" = "可选输入法";
+"Adds a real macOS input source. While it is selected, press Control-Option-F to start a marked composition, type, choose a native candidate, then press Return to commit or Escape to cancel. Ordinary typing passes through unchanged." = "添加一个真实的 macOS 输入源。选中后，按 Control-Option-F 开始组合输入，输入文本并选择原生候选；按 Return 提交，按 Escape 取消。普通输入会保持原样透传。";
+"Install Input Method…" = "安装输入法…";
+"Open Keyboard Settings…" = "打开键盘设置…";
+"General" = "通用";
+"Terms" = "术语";
+"About" = "关于";
+"Install FlowKey Compose?" = "安装 FlowKey Compose？";
+"FlowKey will copy its signed input-method bundle to your user Library/Input Methods folder. macOS will still require you to add or select it in Keyboard Settings." = "FlowKey 会把已签名的输入法 bundle 复制到你的用户“资源库/Input Methods”文件夹；之后仍需在 macOS 键盘设置中添加或选择它。";
+"Unavailable in this build" = "当前构建不可用";
+"Not installed" = "未安装";
+"Installed" = "已安装";
+"Added to Input Sources" = "已添加到输入源";
+"Currently selected" = "当前已选中";
+"The bundle was copied, but macOS could not register it yet. Sign out and back in, then open Keyboard Settings." = "bundle 已复制，但 macOS 暂时无法注册。请退出登录后重新登录，再打开键盘设置。";
+"Development" = "开发版本";
+"Version %@" = "版本 %@";
+"Translate, rewrite, and dictate with tools built into macOS." = "使用 macOS 内置工具进行翻译、改写和听写。";
+
+/* Shortcut names */
+"Option-Space" = "Option–空格";
+"Control-Space" = "Control–空格";
+"Option-T" = "Option–T";
+"Control-Option-Space" = "Control–Option–空格";
+
+/* Terminology */
+"Add Terminology" = "添加术语";
+"Term" = "术语";
+"Guidance" = "说明";
+"Keep this product name unchanged" = "保持这个产品名称不变";
+"Used only by on-device rewrite actions." = "仅用于设备端改写。";
+"No Terminology Yet" = "尚无术语";
+"Add only names or phrases that regularly need special handling." = "只添加经常需要特殊处理的名称或短语。";
+"Delete %@" = "删除 %@";
+"Delete this term?" = "删除这个术语？";
+"“%@” will be removed from local rewrite context." = "“%@”将从本地改写上下文中移除。";
+"Enter a term." = "请输入术语。";
+"Terms can contain at most 80 characters." = "术语最多可包含 80 个字符。";
+"Guidance can contain at most 240 characters." = "说明最多可包含 240 个字符。";
+"That term is already in the list." = "术语列表中已存在这个术语。";
+"FlowKey supports up to 100 focused terminology entries." = "FlowKey 最多支持 100 条精选术语。";
+"FlowKey could not read the terminology file: %@" = "FlowKey 无法读取术语文件：%@";

@@ -1,20 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-FlowKey ships as a Swift Package targeting macOS 14+. Primary app code lives under `Sources/FlowKey`, organized by feature folders (`App`, `Services`, `Views`, `Utilities`, `Resources`). New Swift files should sit with their peers; e.g., an input-method update belongs in `Sources/FlowKey/InputMethod`. Tests mirror the structure under `Sources/FlowKeyTests/UnitTests`, while shared docs live in `Documentation/` and reusable scripts (`run_app.sh`, `test_project.sh`, `build.sh`) stay at the repo root.
+FlowKey is a Swift Package targeting macOS 14 or later. The executable target lives under `Sources/FlowKey`, with features grouped into `App/`, `Services/`, `Views/`, and `InputMethod/`. Shared assets belong in `Sources/FlowKey/Resources`, while long-form docs sit in `Documentation/`. Tests mirror the source tree under `Sources/FlowKeyTests/UnitTests`, so add new specs beside the code they exercise.
 
 ## Build, Test, and Development Commands
-- `swift build`: compile the debug binary into `.build/debug/FlowKey`.
-- `swift run`: rebuild if necessary and launch the SwiftUI shell for manual QA.
-- `swift build -c release`: produce an optimized build; pair with `./build.sh` to bundle the app and input method.
-- `./run_app.sh`: restart the debug binary in the background for UI iteration.
-- `swift test`: execute the XCTest suite; run `./test_project.sh` when you need an environment sanity check.
+Use `swift build` to compile the debug binary at `.build/debug/FlowKey`. Run `swift run` for a rebuild plus interactive SwiftUI shell. `./run_app.sh` rebuilds if needed, terminates any running instance, and relaunches the debug app. Execute `swift build -c release` for an optimized binary, and pair it with `./build.sh` to assemble the distributable bundle. Run `swift test` for XCTest coverage; fall back to `./test_project.sh` when environments drift.
 
 ## Coding Style & Naming Conventions
-Target Swift 5.9 defaults: four-space indentation, braces on new lines for types, trailing commas on multiline literals. Use `UpperCamelCase` for types, `lowerCamelCase` for members, and lowercase enum cases. Keep UI state in SwiftUI views or `@MainActor` observable objects, and push side effects into services within `Sources/FlowKey/Services`. Store localized strings using `LocalizationKey` dictionaries and add assets to `Resources/` to receive SwiftPM bundling.
+Follow Swift 5.9 defaults: four spaces per indent, braces on new lines for types, trailing commas in multiline literals. Name types in UpperCamelCase, members in lowerCamelCase, and enum cases in lowercase. Keep SwiftUI state in the view or an `@MainActor` observable object, and route side effects through services in `Sources/FlowKey/Services`. Localized strings belong in `LocalizationService` dictionaries, and new assets must be added to `Resources/` for bundling.
 
 ## Testing Guidelines
-Unit coverage relies on XCTest. Place new specs alongside the feature under `Sources/FlowKeyTests/UnitTests`. Name methods `test<Scenario>` and adopt async expectations for translation or input workflows. Always run `swift test` locally; document any manual verification when UI behaviour changes.
+Tests use XCTest with async expectations for translation and speech flows. Name methods `test<Scenario>` and colocate mocks with their features under `Sources/FlowKeyTests`. Always run `swift test` before committing, and document any manual UI checks in your change description.
 
 ## Commit & Pull Request Guidelines
-Write sentence-case commit subjects focused on the primary change, and mention impacted modules plus scripts/tests executed in the body. Pull requests should explain the problem, summarize the solution, include screenshots for UI tweaks, and confirm `swift build` and `swift test` completed. Note localization or bundle updates so reviewers can validate resources and Info.plist entries.
+Write sentence-case commit subjects that capture the primary change, then mention touched modules and executed scripts in the body (e.g., "Run: swift test"). Pull requests should state the issue, summarize the solution, link verification steps, and attach screenshots or recordings for UI changes. Call out localization and resource updates so reviewers can validate bundle contents and Info.plist edits.
+
+## Security & Configuration Tips
+Never commit secrets. Use environment variables or the system keychain for credentials, and document mock values in `Documentation/`. Guard new network-facing code against missing entitlements and surface errors through the existing logging utilities.

@@ -1,235 +1,98 @@
-# FlowKey 智能输入法 - 本地测试指南
+# FlowKey 运行指南
 
-## 🎯 概述
-
-FlowKey 是一个运行在 macOS 上的智能输入法应用程序，集成本地 AI 服务，提供划词翻译、智能改写、语音记录等功能。
-
-## 📋 系统要求
-
-- **操作系统**: macOS 14.0 (Sonoma) 或更高版本
-- **架构**: Apple Silicon (arm64) 或 Intel
-- **Swift 版本**: 6.2 或更高版本
-- **内存**: 至少 8GB RAM
-- **存储**: 至少 2GB 可用空间
-
-## 🚀 快速启动
-
-### 方法一：使用启动脚本（推荐）
+## 最短路径
 
 ```bash
-# 在项目根目录运行
-./run_app.sh
+./script/build_and_run.sh
 ```
 
-### 方法二：手动启动
+脚本会依次：
+
+1. 结束旧的 FlowKey 进程。
+2. 构建当前 Swift Package 可执行目标。
+3. 在 `dist/FlowKey.app` 生成真实的 macOS app bundle。
+4. 写入并校验最小 `Info.plist`。
+5. 进行本地 ad-hoc 签名。
+6. 通过 `open -n` 启动 app bundle。
+
+不要直接运行 `.build/debug/FlowKey`。SwiftUI GUI 直接以命令行程序启动会缺少正确的 bundle metadata、Dock 激活和系统框架行为。
+
+## 常用模式
 
 ```bash
-# 1. 构建应用程序
-swift build
-
-# 2. 启动应用程序
-./.build/debug/FlowKey
+./script/build_and_run.sh --verify     # 启动并确认进程存在
+./script/build_and_run.sh --build-only # 只构建 app bundle
+./script/build_and_run.sh --debug      # 使用 LLDB
+./script/build_and_run.sh --logs       # 启动并查看统一日志
+./script/test.sh                       # 运行测试
+./build.sh                             # 构建 release app bundle
 ```
 
-### 方法三：后台运行
+`./run_app.sh` 和 `./test_project.sh` 是兼容旧命令的薄封装，分别转发到新的统一脚本。
+
+## 主窗口键盘操作
+
+- `Command-1`：切换到翻译工作区。
+- `Command-2`：切换到改写工作区。
+- `Command-Return`：执行当前翻译或改写动作。
+- 菜单栏“转换”（英文系统中为“Transform”）提供同样的模式、执行与清空命令，并跟随当前活动窗口。
+
+源文本和结果之间使用可拖动的原生 macOS 分隔条；在“翻译 / 改写”间切换时，当前草稿会随用户继续流转。
+
+## 首次翻译
+
+Apple Translation 会提示下载源语言和目标语言。语言包由 macOS 管理，并可在系统设置中管理。取消下载后，FlowKey 会回到可操作状态并显示重试提示。
+
+## 系统级快捷操作
+
+1. 在其他 App 中选中文字。
+2. 按 `Option-Space`（可在 FlowKey 设置中切换为其他组合键）。
+3. 首次使用时，在“隐私与安全性 → 辅助功能”中允许 FlowKey。
+4. 返回原 App，再次选中文字并按快捷键。
+5. 选择“翻译、优化、缩短、正式化或校对”。完成后明确点击“复制”或“替换选区”。
+
+FlowKey 不会为了取词模拟 `Command-C`，因此不会静默覆盖剪贴板。若当前 App 不支持 macOS 的选中文本接口、没有选区或处于安全输入框，浮动面板会解释原因；可改用“使用剪贴板”。授权状态变化后无需重新配置快捷键，回到源 App 再次触发即可。
+
+改写使用 Apple 的设备端语言模型，需要 macOS 26、符合条件的 Mac、已启用 Apple Intelligence 且模型准备完成。如果任一条件不满足，FlowKey 会明确禁用改写，不会把文本转发到第三方服务器。
+
+## 听写与术语
+
+翻译和改写工作区的麦克风按钮只在点击后请求“语音识别”和“麦克风”权限。支持设备端识别时 FlowKey 会强制使用设备端识别，否则使用系统提供的普通 Apple Speech 路径，并在界面中如实显示状态。
+
+“设置 → 术语”中的术语保存在本机 `~/Library/Application Support/FlowKey/terminology.json`。术语只进入设备端改写提示，不会被虚假宣称为 Apple Translation 的自定义词典。
+
+## 界面语言
+
+FlowKey 原生跟随 macOS 的首选语言，当前完整支持英语和简体中文，不提供重复的 App 内语言开关。开发时可用下面的命令只为本次进程强制中文，不会更改系统设置：
 
 ```bash
-# 后台启动应用程序
-nohup ./.build/debug/FlowKey > /dev/null 2>&1 &
-
-# 查看进程状态
-ps aux | grep FlowKey
+open -n dist/FlowKey.app --args -AppleLanguages '(zh-Hans)'
 ```
 
-## 🎮 应用程序界面
+主 App 的菜单、工作区、设置、权限恢复提示及隐私用途说明都会同步切换；内嵌的 FlowKey Compose 也携带对应的简体中文资源。
 
-### 主界面
-- **标题**: FlowKey 智能输入法
-- **状态指示器**: 显示应用程序运行状态
-- **功能列表**: 展示核心功能特性
-- **操作按钮**: 设置、测试、退出
+## 可选的 FlowKey Compose 输入源
 
-### 设置界面
-- **通用设置**: 开机自启动、菜单栏显示、自动更新
-- **翻译设置**: 源语言、目标语言配置
-- **关于信息**: 版本号、构建时间
+构建脚本会把独立的 `FlowKey Compose.app` 嵌入到：
 
-## 🔧 核心功能
-
-### 1. 划词翻译
-- **功能**: 选中任意文本即可翻译
-- **支持语言**: 中英文互译
-- **特点**: 本地处理，保护隐私
-
-### 2. 语音识别
-- **功能**: 支持语音输入和命令
-- **技术**: 基于 Whisper 语音识别
-- **应用**: 语音转文字、语音命令
-
-### 3. 智能推荐
-- **功能**: 基于上下文的智能建议
-- **技术**: 机器学习算法
-- **用途**: 提高输入效率
-
-### 4. 知识库管理
-- **功能**: 个人知识管理系统
-- **特点**: 支持文档导入和搜索
-- **应用**: 快速查找和使用知识
-
-### 5. 云同步
-- **功能**: iCloud 数据同步
-- **特点**: 跨设备数据一致性
-- **安全**: 端到端加密
-
-## 📊 当前版本信息
-
-### 版本状态
-- **版本**: 1.0.0 (简化测试版)
-- **构建类型**: Debug
-- **构建时间**: 2025-08-23
-- **Swift 版本**: 6.2
-
-### 功能状态
-- ✅ **基础界面**: 完整的 macOS 应用界面
-- ✅ **设置功能**: 基本设置选项
-- ✅ **状态管理**: 应用程序状态管理
-- ⚠️ **翻译功能**: 界面已就绪，核心功能待完善
-- ⚠️ **语音功能**: 界面已就绪，核心功能待完善
-- ⚠️ **AI 功能**: 界面已就绪，核心功能待完善
-
-## 🔍 故障排除
-
-### 常见问题
-
-#### 1. 构建失败
-```bash
-# 清理构建缓存
-rm -rf .build
-
-# 重新构建
-swift build
+```text
+dist/FlowKey.app/Contents/Library/Input Methods/FlowKey Compose.app
 ```
 
-#### 2. 应用程序无法启动
-```bash
-# 检查权限
-chmod +x .build/debug/FlowKey
+它不会自动安装。需要时：
 
-# 检查依赖
-swift package show-dependencies
-```
+1. 打开 FlowKey 设置。
+2. 在“Optional Input Method”中点击“Install Input Method…”。
+3. 阅读确认信息后再点击“Install”。
+4. 在 macOS 键盘设置的输入源中添加或选择 FlowKey Compose。
 
-#### 3. 应用程序无响应
-```bash
-# 强制结束进程
-pkill -f FlowKey
+选中该输入源后，普通输入会原样交给当前 App。按 `Control-Option-F` 才进入 FlowKey 组合模式：输入内容会成为 marked text，候选窗口提供原文、大写、小写和标题格式；Return 提交，Escape 取消。设置页状态来自 macOS Text Input Sources API，不是应用内布尔值。
 
-# 重新启动
-./run_app.sh
-```
+## 当前 Command Line Tools 说明
 
-### 日志查看
+当前机器的 Swift 6.4 Command Line Tools 存在两处环境问题：
 
-```bash
-# 查看应用程序输出
-tail -f nohup.out
+- 默认 `swiftbuild` 后端在初始化时报告 `Unknown error parsing property list`。
+- macOS 27 SDK 引用了未随 Command Line Tools 安装的 `SwiftUIMacros` 插件。
 
-# 查看系统日志
-log show --predicate 'process == "FlowKey"' --info --debug
-```
-
-## 🛠️ 开发说明
-
-### 项目结构
-```
-FlowKey/
-├── Sources/
-│   ├── FlowKey/
-│   │   ├── App/
-│   │   │   ├── FlowKeyApp.swift (完整版)
-│   │   │   └── SimpleFlowKeyApp.swift (简化版)
-│   │   ├── Services/ (服务层)
-│   │   ├── Models/ (数据模型)
-│   │   └── Views/ (界面组件)
-│   └── FlowKeyTests/ (测试代码)
-├── .build/ (构建产物)
-├── Package.swift (项目配置)
-└── run_app.sh (启动脚本)
-```
-
-### 构建配置
-
-#### 完整版本（需要修复编译错误）
-```bash
-# 使用完整版 Package.swift
-cp Package-Original.swift Package.swift
-swift build
-```
-
-#### 简化版本（可立即运行）
-```bash
-# 使用简化版 Package.swift
-cp Package-Simple.swift Package.swift
-swift build
-```
-
-### 测试运行
-
-```bash
-# 运行单元测试
-swift test
-
-# 运行特定测试
-swift test --filter TranslationServiceTests
-```
-
-## 📝 注意事项
-
-### 当前限制
-1. **简化版本**: 当前运行的是简化测试版本
-2. **功能限制**: 部分高级功能尚未实现
-3. **性能**: 未进行性能优化
-4. **兼容性**: 仅支持 macOS 14.0+
-
-### 安全提醒
-1. **权限管理**: 应用程序需要适当的系统权限
-2. **数据安全**: 本地处理，保护用户隐私
-3. **网络访问**: 部分功能需要网络连接
-
-### 开发建议
-1. **逐步完善**: 先修复编译错误，再增强功能
-2. **测试驱动**: 添加充分的测试用例
-3. **用户体验**: 优化界面和交互体验
-4. **性能优化**: 提高应用程序性能
-
-## 🔄 更新说明
-
-### 完整版本开发计划
-1. **修复编译错误**: 解决所有编译问题
-2. **实现核心功能**: 完善翻译、语音、AI 功能
-3. **优化性能**: 提高运行效率
-4. **完善测试**: 增加测试覆盖率
-5. **发布准备**: 准备正式版本
-
-### 版本历史
-- **v1.0.0-test**: 简化测试版本，基础界面和设置
-- **v1.0.0-full**: 完整功能版本（开发中）
-
-## 📞 技术支持
-
-### 获取帮助
-- **项目文档**: 查看 `README.md` 和 `plan.md`
-- **测试报告**: 查看 `TEST_REPORT.md`
-- **问题报告**: 提交 Issue 到项目仓库
-
-### 开发者信息
-- **开发语言**: Swift
-- **UI 框架**: SwiftUI
-- **构建工具**: Swift Package Manager
-- **目标平台**: macOS
-
----
-
-**最后更新**: 2025-08-23  
-**文档版本**: 1.0  
-**适用版本**: v1.0.0-test
+项目脚本会在未安装完整 Xcode 时自动使用完整的 macOS 26.5 SDK 和 SwiftPM native 后端。测试脚本还会补齐 Swift Testing framework 的搜索路径。安装完整 Xcode 后，脚本会自动回到标准 SwiftPM 构建路径。

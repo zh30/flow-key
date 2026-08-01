@@ -1,196 +1,99 @@
-# FlowKey 项目测试报告
+# FlowKey Verification Report
 
-## 测试概述
-- **测试时间**: 2025-08-23 22:17:27 CST
-- **测试平台**: macOS 15.0 (Sequoia) on Apple Silicon (arm64)
-- **Swift 版本**: 6.2
-- **项目状态**: 开发中，需要修复编译错误
+Date: 2026-08-01
 
-## 项目基本信息
+Platform: macOS, Apple Silicon
 
-### ✅ 项目结构检查
-- **Package.swift**: 存在且配置正确
-- **Sources 目录**: 存在，包含 61 个 Swift 源文件
-- **测试目录**: 存在，包含 4 个测试文件
-- **包解析**: 成功，所有依赖项正确识别
+Compiler: Apple Swift 6.4, Swift 5 language mode
 
-### 📊 代码统计
-- **Swift 源文件**: 61 个
-- **测试文件**: 4 个
-- **主要模块**: App, Models, Services, Views, InputMethod
+## Automated verification
 
-### 📦 依赖项分析
-项目使用以下依赖项：
-1. **MLX** (0.17.0+) - 本地 AI 推理框架
-2. **SwiftyJSON** (4.3.0+) - JSON 处理库
-3. **Alamofire** (5.9.0+) - 网络请求库
-4. **Swift Composable Architecture** (1.9.0+) - 状态管理框架
+Command:
 
-## 测试结果
-
-### ❌ 编译测试
-**状态**: 失败
-**问题**: 大量编译错误需要修复
-
-**主要错误类型**:
-1. **重复声明错误**: 多个类和结构体重复定义
-2. **类型不匹配**: API 签名不匹配
-3. **弃用 API 警告**: 使用了已弃用的 macOS API
-4. **CoreData 配置问题**: 实体定义不完整
-5. **SwiftUI 兼容性问题**: 部分 UI 组件在 macOS 上不兼容
-
-### ⚠️ 单元测试
-**状态**: 无法运行
-**原因**: 主项目编译失败，导致测试无法执行
-
-**现有测试文件**:
-1. `TranslationTests.swift` - 翻译服务测试
-2. `KnowledgeBaseManagerTests.swift` - 知识库管理测试
-3. `ModelUpdateManagerTests.swift` - 模型更新测试
-4. `TranslationQualityOptimizerTests.swift` - 翻译质量优化测试
-
-### 🔍 集成测试
-**状态**: 未执行
-**原因**: 项目编译失败
-
-## 关键问题分析
-
-### 1. 架构问题
-- **模块重复**: 多个服务类重复定义
-- **依赖循环**: 某些模块之间存在循环依赖
-- **API 不一致**: 不同模块间的接口不匹配
-
-### 2. 平台兼容性
-- **iOS/macOS混用**: 部分 UI 组件使用 iOS 特有 API
-- **Swift 版本兼容**: Swift 6.2 的新特性可能需要适配
-- **弃用 API**: 大量使用已弃用的 macOS API
-
-### 3. 代码质量
-- **错误处理**: 缺少适当的错误处理机制
-- **测试覆盖**: 测试覆盖率不足
-- **文档**: 缺少 API 文档和注释
-
-## 修复建议
-
-### 🔧 立即修复（高优先级）
-
-#### 1. 解决编译错误
-- 删除重复的类定义
-- 修复 CoreData 实体定义
-- 更新弃用的 API 调用
-- 修复 SwiftUI 兼容性问题
-
-#### 2. 重构代码结构
-- 统一服务管理器接口
-- 消除循环依赖
-- 标准化错误处理模式
-
-#### 3. 平台适配
-- 替换 iOS 特有 UI 组件
-- 使用现代 macOS API
-- 适配 Swift 6.2 新特性
-
-### 📋 中期改进（中优先级）
-
-#### 1. 增强测试
-- 修复现有测试用例
-- 增加集成测试
-- 提高测试覆盖率
-
-#### 2. 代码质量
-- 添加代码注释
-- 实现错误处理
-- 优化性能
-
-#### 3. 文档完善
-- 编写 API 文档
-- 创建开发指南
-- 更新用户手册
-
-### 🎯 长期规划（低优先级）
-
-#### 1. 功能增强
-- 完善 AI 功能
-- 优化用户体验
-- 增加新特性
-
-#### 2. 性能优化
-- 内存优化
-- 启动速度优化
-- 响应时间优化
-
-#### 3. 发布准备
-- 版本管理
-- 发布流程
-- 用户支持
-
-## 具体修复步骤
-
-### 第一步：清理重复代码
 ```bash
-# 查找重复定义
-find Sources -name "*.swift" -exec grep -l "class.*Manager" {} \;
-# 删除重复文件
-# 统一接口定义
+./script/test.sh
 ```
 
-### 第二步：修复编译错误
+Result: 35 tests in 7 suites passed.
+
+Covered behavior:
+
+- Preference defaults.
+- Preference persistence across instances.
+- Global-shortcut defaults, persistence, and change notification.
+- Empty source validation.
+- Translation configuration creation.
+- Same-language rejection.
+- Friendly recovery after canceling a language download.
+- Protection against stale translation responses.
+- Request-version invalidation when a source draft changes mid-operation.
+- View-owned rewrite tasks are canceled when their draft, action, panel, or window context disappears; stale responses remain revision-gated.
+- Invalidating stale results when the language pair changes.
+- Language and text swapping.
+- Quick-capture permission recovery copy.
+- Clipboard fallback state and empty-clipboard failure.
+- Secure-field privacy guidance.
+- Quick Action mapping and stale-result invalidation when switching transformations.
+- Rewrite validation, action instructions, stale-response protection, and result reuse.
+- Dictation transcript merging.
+- Local terminology validation, case-insensitive duplicate prevention, atomic persistence, and removal.
+- Input composition explicit-start behavior.
+- Composition editing, commit, cancellation, and deduplicated candidates.
+
+## Build verification
+
+Command:
+
 ```bash
-# 逐一修复文件
-swift build --verbose 2>&1 | head -20
-# 根据错误信息修复
+./script/build_and_run.sh --verify
 ```
 
-### 第三步：更新 API
-```swift
-// 替换弃用 API
-NSUserNotification -> UserNotifications
-// 适配 Swift 6.2
-// 修复异步代码
-```
+Result:
 
-### 第四步：完善测试
-```bash
-# 运行测试
-swift test
-# 修复测试错误
-# 增加新测试
-```
+- Swift target compiled successfully.
+- `dist/FlowKey.app` was generated with a valid Info.plist.
+- English was declared as the development language and Simplified Chinese resources were packaged in the host app and nested input-method bundle.
+- The app bundle was ad-hoc signed.
+- The independent `FlowKeyInputMethod` target compiled successfully.
+- `FlowKey Compose.app` was embedded with a valid input-source Info.plist and its own ad-hoc signature.
+- Strict deep signature verification passed for the host and nested input-method bundles.
+- The nested bundle launched an `IMKServer` process successfully, then the smoke-test process was terminated.
+- FlowKey launched as a foreground macOS process.
 
-## 预期结果
+## Manual UI verification
 
-修复后，项目应该能够：
-1. ✅ 成功编译和构建
-2. ✅ 所有测试通过
-3. ✅ 在 macOS 上正常运行
-4. ✅ 核心功能可用
-5. ✅ 代码质量提升
+Verified in dark appearance:
 
-## 风险评估
+- Main window opens at 780 × 520 and supports resizing.
+- Source editor receives focus at launch.
+- Paste, clear, settings, language pickers, swap, and Translate controls are visible.
+- Empty, ready, translating, cancellation, and error states render correctly.
+- Command-Return opens Apple's language-download flow for a new language pair.
+- Canceling the system download returns control to FlowKey.
+- Settings opens with Command-comma and displays working preferences only.
+- Menu bar scene is present while the app remains a normal Dock application.
+- Option-Space registers globally and invokes FlowKey while TextEdit is frontmost.
+- The compact Quick Action panel appears near the pointer as a single floating panel and exposes translation plus rewrite choices.
+- The denied-permission state explains how to grant access and offers an explicit clipboard fallback.
+- Opening FlowKey Settings dismisses the floating panel so it cannot cover configuration.
+- Settings reports the actual “Not installed” input-method state and explains the explicit installation boundary.
+- The install action is gated by a native confirmation dialog.
+- The main window switches cleanly between native Translate and Rewrite workspaces.
+- The active source draft follows the user when switching between Translate and Rewrite.
+- The native Transform menu exposes checked Translate/Rewrite modes, follows the focused window, and updates its primary action label.
+- Two simultaneous windows can hold different modes; raising each window changes the Transform menu from Translate to Improve and back without cross-window state leakage.
+- Command-1 and Command-2 switch workspaces; Command-Return follows the same validation path as the visible primary button.
+- The source/result divider is an accessible native splitter and accepts a changed split position.
+- Copy feedback uses one cancelable reset task per workspace, preventing overlapping timers from clearing newer feedback.
+- This Mac's real Foundation Models state (`deviceNotEligible`) is shown without a network fallback or fake result.
+- General, Terms, and About settings use a conventional macOS toolbar; the empty terminology state and input constraints are visible.
+- A process launched with `-AppleLanguages '(zh-Hans)'` localized the native menu bar, Translate and Rewrite workspaces, the real Foundation Models unavailable state, Terms settings, and the denied-permission Quick Action panel. Product and language names intentionally retain their native names.
 
-### 高风险
-- 架构重构可能引入新问题
-- API 变更可能影响现有功能
-- 依赖项更新可能带来兼容性问题
+Not performed:
 
-### 中风险
-- 测试修复可能耗时
-- 文档更新工作量较大
-- 性能优化可能影响稳定性
-
-### 低风险
-- 代码格式化
-- 注释添加
-- 文档完善
-
-## 结论
-
-FlowKey 项目是一个功能丰富的智能输入法应用，具有很好的架构设计和功能规划。但目前存在较多编译错误需要修复。建议按照优先级逐步解决问题，先确保项目能够正常编译和运行，然后再进行功能增强和性能优化。
-
-项目的技术栈选择合理，使用了现代的 Swift 技术和框架，具有良好的发展前景。修复完成后，将是一个非常有价值的 macOS 应用程序。
-
----
-
-**报告生成时间**: 2025-08-23 22:17:27 CST  
-**测试工具**: Swift Package Manager, XCTest, 自定义测试脚本  
-**报告版本**: 1.0
+- Language packages were not downloaded automatically because that changes system-managed state and was not required for structural verification.
+- Accessibility access was not granted automatically. Successful selection capture and replacement still need the user-authorized TextEdit, Safari, Mail, and third-party editor matrix.
+- Microphone and Speech Recognition access were not requested automatically. Live dictation remains a user-authorized acceptance step.
+- The development Mac is not eligible for Apple's on-device language model, so successful rewrite generation must be accepted on eligible hardware.
+- FlowKey Compose was not installed or selected automatically. End-to-end marked-text and candidate verification in first- and third-party apps remains a user-authorized acceptance step.
+- Production signing and notarization were not performed.

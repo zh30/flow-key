@@ -1,471 +1,237 @@
-# FlowKey 智能输入法应用程序实现计划
+# FlowKey Product and Rebuild Plan
 
-## 🎉 项目完成状态
+## Product in one sentence
 
-### 🏆 项目状态：**100% 完成** 
+FlowKey helps a Mac user turn the text they are writing into the text they want with the fewest possible actions.
 
-🎉 **FlowKey 智能输入法应用程序已全部完成！** 所有核心功能和高级特性都已实现并通过编译测试。
+The product is not a collection of AI feature demos. Translation, rewriting, voice input, personal terminology, and an input method are delivery mechanisms for the same job: transform text without breaking the user's flow.
 
-#### 已完成的核心功能：
-1. ✅ **智能输入法系统**: 多语言输入、翻译、文本检测
-2. ✅ **AI 翻译服务**: 在线/本地/混合翻译模式
-3. ✅ **知识库管理**: 完整的知识管理系统
-4. ✅ **用户习惯学习**: 智能学习用户习惯
-5. ✅ **数据加密**: 完整的隐私保护机制
-6. ✅ **数据备份**: 自动备份和恢复
-7. ✅ **智能文本检测**: 上下文感知的文本分析
-8. ✅ **翻译质量优化**: 持续学习和质量提升
-9. ✅ **模型更新**: 自动模型更新机制
-10. ✅ **语音命令识别**: 完整的语音交互系统
-11. ✅ **iCloud 云同步**: 跨设备数据同步
-12. ✅ **常用语管理**: 完整的常用语管理系统
+## First-principles product model
 
-#### 项目完成情况：
-- ✅ **第一阶段核心功能**: 100% 完成
-- ✅ **第二阶段 AI 集成**: 100% 完成  
-- ✅ **第三阶段云同步和效率提升**: 100% 完成
+### Core user job
 
-#### 所有功能已完成：
-- ✅ **智能联想推荐**: 基于上下文的智能推荐系统
-- ✅ **快捷键自定义**: 用户自定义快捷键管理
-- ✅ **模板系统**: 完整的文档模板管理
-- ✅ **文本改写功能**: 风格转换和语法纠错
+1. Capture text from the current writing context.
+2. Choose the intended transformation.
+3. Review a trustworthy result.
+4. Put the result back where the user was working.
 
-#### 项目价值：
-FlowKey 已经具备了完整的 AI 智能输入法核心功能和丰富的效率提升功能，能够为用户提供强大的本地化 AI 文本处理服务和便捷的输入体验！
+Every feature must make one of these four steps faster, safer, or more accurate. A feature that cannot do that does not belong in the primary interface.
 
----
+### Product principles
 
-## 🎯 当前进度
+- One obvious primary action per surface.
+- Never present a mock result as a working capability.
+- Prefer macOS frameworks and conventions over custom infrastructure.
+- Keep text local unless a user explicitly selects a network-backed provider.
+- Use progressive disclosure: common actions first, advanced configuration in Settings.
+- Treat keyboard, pointer, menu bar, and accessibility as first-class input methods.
+- Build one complete workflow at a time, including empty, loading, success, error, and permission states.
 
-### 总体完成度：**88%** 
-- ✅ **第一阶段基础框架**: 100% 完成
-- ✅ **第二阶段 AI 功能集成**: 100% 完成
-- ✅ **核心 AI 架构**: 100% 完成
-- ✅ **本地翻译模型**: 100% 完成
-- ✅ **知识库系统**: 100% 完成
-- ✅ **语音识别功能**: 100% 完成
-- ✅ **数据管理和隐私**: 100% 完成
-- ✅ **智能文本检测**: 100% 完成
-- ✅ **语音命令识别**: 100% 完成
-- 🔄 **第三阶段云同步和效率提升**: 40% 完成
+## What the repository actually contains
 
-### 最新更新：2025-08-23
-- ✅ 修复所有编译错误，项目构建成功
-- ✅ 完成 MLX 本地翻译模型集成
-- ✅ 实现向量数据库和语义搜索
-- ✅ 集成 Whisper 语音识别
-- ✅ 完善统一 AI 服务接口
-- ✅ 完成输入法基础框架实现
-- ✅ 实现划词翻译功能
-- ✅ 完成用户界面设置
-- ✅ 实现快捷键功能
-- ✅ 实现翻译历史记录功能
-- ✅ 完善 Core Data 模型设计
-- ✅ 实现数据加密和隐私保护
-- ✅ 实现数据备份和恢复系统
-- ✅ 实现智能文本检测功能
-- ✅ 集成 Natural Language 框架
-- ✅ 实现上下文感知建议系统
-- ✅ 完成用户习惯学习框架
-- ✅ 完成翻译质量优化系统
-- ✅ 实现模型自动更新机制
-- ✅ 完成知识库管理界面
-- ✅ 实现语音命令识别系统 🎉
+| Capability | Previous claim | Verified state before rebuild | Decision |
+| --- | --- | --- | --- |
+| Translation | Local, online, smart translation | Compiled target returned prefixed mock text | Rebuild with Apple's Translation framework |
+| Input method | Working macOS input method | Compiled target only toggled an in-memory Boolean | Build later as a real InputMethodKit target |
+| Voice | Whisper recognition and commands | Replaced with click-to-start Apple Speech dictation and explicit permission states | Keep as a small source-text input aid |
+| Knowledge base | Semantic personal search | Replaced with a bounded local terminology list and atomic JSON persistence | Feed only proven terms into on-device rewrite context |
+| Recommendations | Context-aware suggestions | Replaced with explicit Improve, Shorten, Formalize, and Proofread actions | Keep intent visible and user-selected |
+| Sync and backup | Secure iCloud sync | Excluded from the target; unfinished merge paths | Add only when real user data exists |
+| Localization | Five UI languages | Manual dictionary in the simplified shell | Follow the system language with packaged English and Simplified Chinese resources; add another locale only from demonstrated user need |
 
-## 项目名称
-FlowKey 
+## Information architecture
 
-## 项目概述
-开发一个运行在 Mac 上的智能输入法应用程序，集成本地 AI 服务，提供划词翻译、智能改写、语音记录等功能。
+### Main window
 
-## 技术架构
+- A compact Translate / Rewrite mode switch.
+- A source editor shared by the user's mental model, with click-to-start dictation.
+- Translation language controls only in Translate mode.
+- Explicit rewrite intent only in Rewrite mode.
+- One result surface and one mode-specific primary action.
+- Inline progress and errors.
+- A draggable native source/result split and a focused-window Transform command menu.
 
-### 核心技术栈
-- **Swift + SwiftUI**: 原生 macOS 应用开发，最佳性能和系统集成
-- **MLX Swift**: 本地 AI 推理，Apple Silicon 优化，零数据泄露
-- **IMKInputMethod**: macOS 官方输入法框架，系统级集成
-- **Core Data**: 本地数据存储，用户隐私保护
-- **iCloud CloudKit**: 云同步，跨设备数据一致性
+### Menu bar
 
-### AI 模型选择
-- **翻译模型**: Helsinki-NLP/opus-mt系列（轻量级，多语言支持）
-- **文本生成**: Qwen1.5-1.8B-Chat（MLX 优化版本，本地运行）
-- **语音识别**: Whisper tiny/base模型（MLX Audio 支持）
+- Open Quick Action and show its current shortcut.
+- Open FlowKey.
+- Open Settings.
+- Quit FlowKey.
 
-## 实现阶段
+The menu bar is an entry point, not a miniature dashboard.
 
-### 第一阶段：核心功能 (MVP)
-**目标**: 建立基础输入法框架，实现核心翻译功能
+### Settings
 
-#### 1.1 输入法基础框架
-- [x] 创建 IMKInputMethod 子类
-- [x] 实现基本输入法生命周期
-- [x] 系统权限申请和配置
-- [x] 输入法 bundle 配置
-- [x] 基础 UI 界面
+- Default target language.
+- Whether completed translations copy automatically.
+- Configurable global Quick Action shortcut and registration status.
+- Selected-text permission status and direct recovery actions.
+- A focused local terminology editor.
+- Optional input-method installation and actual system state.
+- Clear privacy explanation.
 
-#### 1.2 划词翻译功能
-- [x] 文本选取监听和处理
-- [x] 集成在线翻译 API（备用方案）
-- [x] 翻译结果界面显示
-- [x] 多语言支持配置
-- [x] 翻译历史记录
+Only settings with working behavior are shown.
 
-#### 1.3 本地数据存储
-- [x] 用户设置存储
-- [x] 翻译历史管理
-- [x] Core Data 模型设计
-- [x] 数据加密和隐私保护
-- [x] 数据备份和恢复
+## Implementation phases
 
-#### 1.4 输入框翻译
-- [x] 全局快捷键监听（三下空格）
-- [x] 输入法状态管理
-- [x] 文本替换和插入逻辑
-- [x] 智能文本检测
-- [x] 用户习惯学习
+### Phase 1: trustworthy translation foundation
 
-### 第二阶段：AI 功能集成
-**目标**: 实现完全本地化的 AI 功能，无需网络连接
+- Build a clean Swift Package target from `Sources/FlowKey/Rebuilt`.
+- Use Apple's Translation framework on macOS 15 or later.
+- Implement the complete manual translation state machine.
+- Add native main-window, menu-bar, and Settings scenes.
+- Add isolated preference and workspace tests.
+- Remove fake feature states from the executable product.
 
-#### 2.1 本地翻译模型
-- [x] MLX Swift 集成
-- [x] 模型量化和优化
-- [x] 离线翻译引擎
-- [x] 翻译质量优化
-- [x] 模型更新机制
+Exit criteria:
 
-#### 2.2 独立知识库
-- [x] 向量数据库集成
-- [x] 文档导入和索引
-- [x] 语义搜索功能
-- [x] 知识库管理界面
-- [x] 智能问答系统
+- `swift build` succeeds from a clean scratch path.
+- `swift test` passes.
+- A user can type, translate, copy, swap languages, clear, and recover from errors.
+- No visible control claims to activate an input method, AI service, sync, or voice feature.
 
-#### 2.3 语音记录与处理
-- [x] 音频录制功能
-- [x] Whisper 模型集成
-- [x] AI 内容总结
-- [x] 智能文本改写
-- [x] 语音命令识别 🎉
+### Phase 2: system-wide quick translation
 
-### 第三阶段：云同步和效率提升 ✅ **已完成**
-**目标**: 提升用户体验，实现跨设备协同
+- Add a global shortcut with a visible, configurable binding.
+- Capture selected text through a clearly explained Accessibility permission flow.
+- Present a compact translation panel near the active context.
+- Copy or replace text only after explicit user action.
+- Test permission denied, no selection, secure fields, and unsupported applications.
 
-#### 3.1 iCloud 同步 ✅
-- [x] CloudKit 集成
-- [x] 数据同步冲突处理
-- [x] 跨设备数据一致性
-- [x] 同步状态监控
-- [x] 离线模式支持
+Exit criteria:
 
-#### 3.2 快捷输入 ✅
-- [x] 常用语管理
-- [x] 智能联想推荐
-- [x] 快捷键自定义
-- [x] 模板系统
-- [x] 学习用户习惯
+- The workflow works in at least TextEdit, Safari, Mail, and a third-party editor.
+- Permission and failure states tell the user exactly how to recover.
 
-#### 3.3 输入改写 ✅
-- [x] 文本风格转换
-- [x] 语法纠错
-- [x] 智能补全
-- [x] 专业术语优化
-- [x] 写作助手功能
+Implementation status (2026-08-01): the configurable Carbon hotkey, Accessibility selection reader, explicit replacement path, clipboard fallback, compact `NSPanel`, permission states, and unit coverage are implemented. The denied-permission path and global invocation from TextEdit are verified. The authorized TextEdit/Safari/Mail/third-party matrix remains a manual acceptance step because FlowKey will not grant itself privacy access.
 
-## 项目结构
+### Phase 3: real input method integration
 
-```
-FlowKey/
-├── FlowKey/
-│   ├── InputMethod/
-│   │   ├── FlowInputController.swift    # 输入法控制器
-│   │   ├── FlowInputServer.swift        # 输入法服务器
-│   │   ├── FlowCandidateView.swift      # 候选词视图
-│   │   └── FlowInputMethod.swift        # 输入法主类
-│   ├── Models/
-│   │   ├── Translation/
-│   │   │   ├── TranslationService.swift    # 翻译服务
-│   │   │   ├── LocalTranslator.swift      # 本地翻译器
-│   │   │   └── OnlineTranslator.swift     # 在线翻译器
-│   │   ├── KnowledgeBase/
-│   │   │   ├── KnowledgeManager.swift     # 知识库管理
-│   │   │   ├── VectorDatabase.swift      # 向量数据库
-│   │   │   └── DocumentProcessor.swift   # 文档处理
-│   │   ├── Speech/
-│   │   │   ├── SpeechRecognizer.swift     # 语音识别
-│   │   │   ├── WhisperService.swift       # Whisper服务
-│   │   │   └── AudioProcessor.swift       # 音频处理
-│   │   └── VoiceCommands/
-│   │       ├── VoiceCommandRecognizer.swift  # 语音命令识别器
-│   │       ├── VoiceCommandParser.swift     # 语音命令解析器
-│   │       └── VoiceCommandExecutor.swift   # 语音命令执行器
-│   ├── Services/
-│   │   ├── AIService.swift               # AI服务统一接口
-│   │   ├── MLXService.swift              # MLX服务
-│   │   ├── StorageService.swift          # 存储服务
-│   │   ├── SyncService.swift             # 同步服务
-│   │   ├── HotKeyService.swift           # 快捷键服务
-│   │   ├── SmartTextDetector.swift       # 智能文本检测
-│   │   ├── TextDetectionService.swift    # 文本检测服务
-│   │   ├── BackupManager.swift          # 备份管理
-│   │   ├── PrivacyManager.swift          # 隐私管理
-│   │   ├── TranslationHistoryManager.swift # 翻译历史管理
-│   │   └── UserHabitManager.swift        # 用户习惯管理
-│   ├── Views/
-│   │   ├── Settings/
-│   │   │   ├── GeneralSettingsView.swift  # 通用设置
-│   │   │   ├── TranslationSettingsView.swift # 翻译设置
-│   │   │   ├── KnowledgeSettingsView.swift # 知识库设置
-│   │   │   ├── TranslationHistoryView.swift # 翻译历史
-│   │   │   ├── BackupSettingsView.swift    # 备份设置
-│   │   │   ├── SmartTextDetectionView.swift # 智能检测
-│   │   │   ├── VoiceCommandSettingsView.swift # 语音命令设置
-│   │   │   └── SyncSettingsView.swift     # 同步设置
-│   │   ├── VoiceCommands/
-│   │   │   ├── VoiceCommandOverlayView.swift # 语音命令悬浮窗
-│   │   │   └── VoiceCommandMiniView.swift   # 语音命令迷你视图
-│   │   └── Overlay/
-│   │       ├── TranslationOverlay.swift   # 翻译悬浮窗
-│   │       ├── SpeechOverlay.swift        # 语音悬浮窗
-│   │       └── SettingsOverlay.swift      # 设置悬浮窗
-│   ├── Resources/
-│   │   ├── Assets.xcassets/              # 图片资源
-│   │   ├── Models/                       # AI模型文件
-│   │   └── Localizable.strings           # 国际化
-│   ├── App/
-│   │   ├── FlowKeyApp.swift              # 主应用
-│   │   └── AppDelegate.swift             # 应用代理
-│   └── Extensions/
-│       ├── String+Extensions.swift      # 字符串扩展
-│       ├── View+Extensions.swift         # 视图扩展
-│       └── System+Extensions.swift       # 系统扩展
-├── FlowKeyTests/
-│   ├── UnitTests/
-│   └── UITests/
-├── FlowKeyInputMethod/
-│   ├── Info.plist                        # 输入法配置
-│   └── Resources/
-└── Documentation/
-    ├── API.md                           # API文档
-    ├── USER_GUIDE.md                    # 用户指南
-    └── DEVELOPMENT.md                   # 开发文档
+- Keep the reproducible Swift Package workflow while introducing separate host-app, input-method, and testable composition targets; move to an Xcode workspace only when production signing requires it.
+- Create a real `IMKServer` entry point.
+- Subclass `IMKInputController` per client session.
+- Define composition, candidate, commit, and cancellation behavior.
+- Share transformation contracts with the host app without sharing UI state.
+
+Exit criteria:
+
+- The signed input method installs and appears in macOS Input Sources.
+- Activation state comes from the system, not an app Boolean.
+- Text composition is verified across first-party and third-party apps.
+
+Implementation status (2026-08-01): `FlowKeyInputMethod` is a separate executable target with a real `IMKServer` entry point and per-session `IMKInputController`. `Control-Option-F` starts deliberate marked composition, a native candidate panel exposes deterministic local variants, Return commits, Escape cancels, and unrelated typing passes through. The build embeds and signs `FlowKey Compose.app`; Settings reads Text Input Sources state and requires confirmation before copying it to the user Input Methods directory. Bundle launch is smoke-tested, but installation, enabling, and cross-app composition remain a user-authorized acceptance step.
+
+### Phase 4: transformation actions
+
+- Add concise rewrite actions: improve, shorten, formalize, and fix grammar.
+- Reuse the same source/result workspace and insertion path.
+- Introduce a provider boundary only when a real model or API is selected.
+- Display privacy and cost implications before enabling a network provider.
+
+Implementation status (2026-08-01): Improve, Shorten, Formalize, and Proofread are implemented in the main workspace and Quick Action panel through Apple's Foundation Models framework. Every request uses a fresh on-device session; availability is mapped to explicit UI states, terminology is bounded, and stale responses cannot cross an action change. There is deliberately no network provider. This Mac reports `deviceNotEligible`, so successful generation requires acceptance on eligible hardware.
+
+### Phase 5: personal context and sync
+
+- Add a small terminology list before attempting a general knowledge base.
+- Measure whether terminology improves translation or rewrite quality.
+- Persist only proven user data.
+- Add CloudKit sync after the local data model and conflict rules are stable.
+
+Implementation status (2026-08-01): the terminology slice is implemented as a maximum of 100 local entries with validation, case-insensitive duplicate prevention, atomic JSON writes, explicit deletion, and unit coverage. It is consumed only by on-device rewrite. CloudKit sync remains deferred because cross-device value and conflict rules have not been proven.
+
+## Architecture
+
+```text
+FlowKeyApp
+├── WindowGroup("translator")
+│   └── FlowKeyWorkspaceView
+│       ├── TranslationWorkspaceView → Apple Translation
+│       ├── RewriteWorkspaceView → Apple Foundation Models
+│       ├── DictationControl → Apple Speech
+│       └── Clipboard (system boundary)
+├── MenuBarExtra
+│   └── quick action / open / settings / quit
+├── SystemQuickTranslation
+│   ├── GlobalShortcutService (Carbon boundary)
+│   ├── AccessibilitySelectionService (selection boundary)
+│   └── NSPanel → QuickTranslationView (small AppKit bridge)
+├── InputMethodManager
+│   └── Text Input Sources status / explicit user installation
+├── FlowKeyInputMethod (separate process)
+│   ├── IMKServer
+│   ├── FlowKeyInputController (one per client session)
+│   └── native marked text / candidates / commit / cancel
+└── Settings
+    ├── AppSettings (persisted preferences)
+    └── TerminologyStore (local atomic JSON)
 ```
 
-## 开发优先级和时间估算
+State ownership:
 
-### 第 1-2 周：基础框架 ✅ 已完成
-- 设置项目结构和开发环境 ✅
-- 实现 IMKInputMethod 基础框架 ✅
-- 系统权限配置和输入法注册 ✅
+- Editor content, language pair, progress, result, and error are window-scoped.
+- Default language and auto-copy are app preferences.
+- Translation sessions are created by the SwiftUI translation task for the active window.
+- Clipboard access is a small explicit system boundary.
+- Quick Action owns a separate window-scoped workspace and never mutates the main window state.
+- AppKit owns only the long-lived utility panel; SwiftUI remains the source of truth for its content.
+- The main mode switch transfers the active source draft between Translate and Rewrite instead of creating two disconnected documents.
+- Scene-focused command values keep Command-1/2 and Command-Return routed to the active window without coupling menu code to feature views.
+- Translation tasks use SwiftUI's managed lifecycle; rewrite and copy-feedback tasks are explicitly canceled when their owning view or request becomes stale.
+- The input method is a separate process and shares only a deterministic composition contract, never SwiftUI state.
 
-### 第 3-4 周：核心功能 ✅ 已完成
-- 实现划词翻译功能 ✅
-- 集成在线翻译 API ✅
-- 基础 UI 界面开发 ✅
+## Required interaction states
 
-### 第 5-6 周：数据存储 ✅ 已完成
-- 用户设置和翻译历史管理 ✅
-- 数据加密和隐私保护 ✅
-- Core Data 模型设计和实现 ✅
-- 备份和恢复系统 ✅
+| State | User sees | Recovery |
+| --- | --- | --- |
+| Empty | A clear prompt in the source editor | Type or paste text |
+| Ready | Enabled Translate button | Press the button or Command-Return |
+| Translating | Progress in result and footer | Wait; duplicate submission is disabled |
+| Success | Selectable result and Copy action | Copy, swap, edit, or translate again |
+| Invalid pair | Inline explanation | Choose different languages |
+| Empty clipboard | Inline explanation | Copy text, then retry Paste |
+| Accessibility denied | Permission explanation and actions | Allow FlowKey, return to the source app, invoke again |
+| No selection | Selection-specific explanation | Select text or use the clipboard |
+| Secure field | Privacy explanation, no capture | Use non-sensitive text |
+| Unsupported app | Capability explanation | Copy text and use the clipboard |
+| Framework error | Apple's localized error | Change pair, install language support, or retry |
+| Rewrite unavailable | Exact system eligibility state | Update/enable/wait, or continue using translation |
+| Dictation permission denied | Permission-specific explanation | Open the matching Privacy & Security pane |
 
-### 第 7-8 周：输入框翻译 ✅ 已完成
-- 全局快捷键监听实现 ✅
-- 输入法状态管理 ✅
-- 文本替换和插入逻辑 ✅
-- 智能文本检测功能 ✅
+## Explicitly not in the current executable scope
 
-### 第 9-12 周：AI 集成 ✅ 已完成
-- MLX Swift 集成 ✅
-- 本地翻译模型实现 ✅
-- 模型量化和性能优化 ✅
+- Fake activation switches for an input method.
+- Simulated model downloads or performance metrics.
+- Placeholder embeddings and semantic search.
+- A third-party language server or silent network fallback.
+- Cloud sync before a stable local data model.
+- Notifications for actions already visible in the active window.
+- Custom cards, pulse animations, floating plus buttons, and version claims that do not help the text workflow.
 
-### 第 13-16 周：知识库功能 ✅ 已完成
-- 向量数据库集成 ✅
-- 文档处理和索引 ✅
-- 语义搜索功能 ✅
+## Verification
 
-### 第 17-20 周：语音功能 ✅ 已完成
-- 音频录制功能 ✅
-- Whisper 模型集成 ✅
-- 语音识别和文本处理 ✅
+Automated:
 
-### 第 21-24 周：云同步
-- iCloud CloudKit 集成
-- 数据同步机制
-- 冲突处理和优化
+- Preference defaults and persistence.
+- Empty input validation.
+- Same-language validation.
+- Translation request configuration.
+- Stale result protection.
+- Language and text swapping.
+- Shortcut preference persistence and live re-registration notification.
+- Quick-capture permission, clipboard, and secure-field recovery states.
+- Input-method composition editing, candidates, commit, and cancellation.
+- Rewrite validation, intent mapping, stale-response protection, and result reuse.
+- Dictation transcript merging.
+- Terminology validation and persistence.
 
-### 第 25-28 周：效率提升
-- 快捷输入系统
-- 文本改写功能
-- 用户体验优化
-- 智能文本检测系统 ✅
+Manual:
 
-## 技术难点和解决方案
-
-### 1. 输入法系统集成
-- **难点**: IMKInputMethod 框架复杂性
-- **方案**: 参考开源输入法项目，逐步实现核心功能
-
-### 2. MLX 模型优化
-- **难点**: 模型大小和性能平衡
-- **方案**: 使用量化技术，选择合适大小的模型
-
-### 3. 全局快捷键
-- **难点**: 系统级快捷键监听
-- **方案**: 使用 Carbon Events API，确保兼容性
-
-### 4. 智能文本检测
-- **难点**: 多语言文本类型识别和上下文感知
-- **方案**: 集成 Natural Language 框架，实现基于机器学习的文本分析
-
-### 5. iCloud 同步
-- **难点**: 数据同步冲突处理
-- **方案**: 实现版本控制和冲突解决机制
-
-## 质量保证
-
-### 测试策略
-- 单元测试：核心业务逻辑
-- UI 测试：用户界面交互
-- 集成测试：系统级功能
-- 性能测试：AI 模型推理速度
-
-### 代码质量
-- SwiftLint 代码规范
-- Swift 文档注释
-- 持续集成配置
-- 代码审查流程
-
-## 发布计划
-
-### Beta 版本
-- 核心翻译功能
-- 基础 AI 集成
-- 有限的云同步
-
-### 正式版本
-- 完整功能集
-- 性能优化
-- 完善的用户体验
-
-### 后续更新
-- 更多 AI 模型支持
-- 新功能特性
-- 用户反馈优化
-
-## 风险评估
-
-### 技术风险
-- Apple 系统 API 变更
-- MLX 框架更新
-- 性能不达标
-
-### 市场风险
-- 用户接受度
-- 竞品分析
-- 商业模式
-
-### 缓解措施
-- 保持代码灵活性
-- 持续性能监控
-- 用户反馈收集
-
-## 🎉 语音命令识别系统
-
-### 功能概述
-语音命令识别系统是 FlowKey 的核心功能之一，允许用户通过语音命令控制应用程序，实现语音翻译、文本插入、搜索等操作。
-
-### 核心组件
-
-#### 1. VoiceCommandRecognizer
-- **多命令类型支持**: 16 种内置命令类型（翻译、插入、搜索、设置、帮助等）
-- **智能命令解析**: 基于关键词的智能语音命令解析
-- **自定义命令**: 支持用户创建自定义语音命令
-- **多语言支持**: 中文、英文、日文、韩文等多种语言
-- **置信度评估**: 基于置信度的命令识别质量评估
-
-#### 2. VoiceCommandSettingsView
-- **完整设置界面**: 集成到主设置界面的语音命令设置
-- **热键配置**: 支持自定义全局热键（默认 Command+Shift+V）
-- **命令自定义**: 创建、编辑、删除自定义语音命令
-- **语言选择**: 支持多种识别语言的选择
-- **历史记录**: 语音命令历史记录查看和管理
-
-#### 3. VoiceCommandOverlayView
-- **实时状态显示**: 实时显示录音、处理状态
-- **可视化反馈**: 音频波形可视化显示
-- **命令确认**: 支持命令执行前的确认流程
-- **快速命令参考**: 内置常用命令快速参考
-
-#### 4. GlobalHotkeyManager
-- **全局热键**: 支持全局热键激活语音命令
-- **热键自定义**: 支持用户自定义热键组合
-- **Carbon API**: 使用 macOS Carbon API 实现系统级热键
-- **热键冲突检测**: 自动检测和处理热键冲突
-
-#### 5. VoiceCommandManager
-- **窗口管理**: 管理语音命令的悬浮窗口
-- **状态同步**: 同步语音命令的各个状态
-- **生命周期管理**: 管理语音命令功能的完整生命周期
-
-### 支持的语音命令
-
-#### 内置命令
-- **翻译命令**: "翻译 Hello World" → 翻译指定文本
-- **插入命令**: "插入 你好世界" → 插入指定文本
-- **搜索命令**: "搜索 Swift 教程" → 搜索知识库
-- **系统命令**: "复制"、"粘贴"、"撤销"、"重做" 等
-- **设置命令**: "设置"、"帮助" 等
-
-#### 自定义命令
-- **个性化命令**: 用户可创建个性化命令
-- **参数化命令**: 支持带参数的自定义命令
-- **条件命令**: 支持条件触发的命令
-- **批量命令**: 支持批量执行的命令
-
-### 技术特点
-
-#### 智能化特性
-- **关键词匹配**: 基于多语言关键词的智能命令识别
-- **上下文理解**: 理解语音命令的上下文和意图
-- **参数提取**: 自动提取命令参数（如翻译目标语言）
-- **置信度计算**: 基于多个因素计算命令识别置信度
-
-#### 性能优化
-- **异步处理**: 所有语音处理都在后台异步进行
-- **实时反馈**: 实时的语音识别和反馈
-- **资源管理**: 智能的音频资源管理
-- **缓存机制**: 实现命令识别结果的缓存
-
-#### 安全机制
-- **隐私保护**: 所有语音处理都在本地进行
-- **权限管理**: 严格的麦克风权限管理
-- **数据加密**: 敏感数据加密存储
-- **访问控制**: 记录语音命令使用日志
-
-### 集成情况
-
-#### 与现有功能集成
-- **语音识别**: 与现有的 Whisper 语音识别系统深度集成
-- **翻译服务**: 集成翻译服务实现语音翻译
-- **知识库**: 集成知识库实现语音搜索
-- **输入法**: 集成输入法系统实现语音输入
-- **设置界面**: 新增语音命令设置页面
-
-#### 用户体验
-- **多种激活方式**: 支持热键、按钮、语音激活
-- **直观的界面**: 清晰的状态指示和视觉反馈
-- **个性化定制**: 用户可自定义命令和设置
-- **无缝集成**: 与应用整体设计风格保持一致
-
-### 开发状态
-- ✅ **核心功能实现**: 100% 完成
-- ✅ **UI 界面完成**: 100% 完成
-- ✅ **系统集成**: 100% 完成
-- ✅ **测试验证**: 100% 完成
-- ✅ **文档更新**: 100% 完成
-
-语音命令识别系统的完成标志着 FlowKey 项目的所有核心功能已经全部实现，项目正式进入 **100% 完成** 状态！🎉
+- Window opens and resizes correctly in light and dark appearances.
+- Full keyboard navigation works.
+- Command-Return starts translation.
+- Paste, clear, copy, swap, Settings, and menu-bar actions work.
+- First-use language download and unsupported-pair errors are understandable.
+- Global shortcut opens the compact panel while another app is active.
+- Authorized selection capture, copy, and explicit replacement pass in TextEdit, Safari, Mail, and a third-party editor.
+- User-authorized live dictation works for representative languages.
+- On-device rewrite generates valid results on eligible Apple Intelligence hardware.

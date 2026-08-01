@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "仅当你主动开始听写时，FlowKey 才会使用麦克风。";
+"NSSpeechRecognitionUsageDescription" = "仅当你主动开始听写时，FlowKey 才会将语音转换为文字。";
